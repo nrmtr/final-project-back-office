@@ -28,7 +28,7 @@
     </div>
   </template>
   
-  <script lang="ts">
+<script lang="ts">
   import axios from "axios";
 
   axios.defaults.withCredentials = true;
@@ -38,6 +38,7 @@
       return {
         email: "",
         password: "",
+        err:"",
         errorMessage: null,
       };
     },
@@ -50,8 +51,9 @@
           });
           localStorage.setItem("authToken", response.data.token);
           this.$router.push("/dashboard");
-        } catch (error) {
-            this.error = err.response?.data?.error || 'Login failed';
+        } catch (error: any) {
+          this.errorMessage = error.response?.data?.error || 'Login failed';
+            // this.error = err.response?.data?.error || 'Login failed';
         }
       },
     },
