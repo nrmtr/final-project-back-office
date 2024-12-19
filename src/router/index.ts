@@ -3,6 +3,7 @@ import Login from '../components/Auth/SignIn.vue'
 import Dashboard from '../components/Dashboard.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  // history: createWebHistory('/back_office/'),
   routes: [
     {
       path: '/',
