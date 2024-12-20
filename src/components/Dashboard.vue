@@ -7,25 +7,25 @@
 </template>
 
 <script lang="ts">
-import { useRouter } from "vue-router"; // Import useRouter
+import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
 
-export default {
-  name: 'Admin_Dashboard',
-  data() {
+export default defineComponent({
+  name: "Admin_Dashboard",
+  setup() {
+    const userEmail = ref(localStorage.getItem("userEmail") || "Unknown");
+    const router = useRouter();
+
+    const logout = () => {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userEmail");
+      router.push("/");
+    };
+
     return {
-      userEmail: localStorage.getItem('userEmail') || 'Unknown',
+      userEmail,
+      logout,
     };
   },
-  methods: {
-
-    logout() {
-      const router = useRouter(); // Initialize the router
-
-      // Clear the token and redirect to login
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('userEmail');
-      router.push('/');
-    },
-  },
-};
+});
 </script>

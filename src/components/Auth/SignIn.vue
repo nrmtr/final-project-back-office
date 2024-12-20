@@ -87,12 +87,7 @@
             </button>
           </div>
           <!--end::Actions-->
-    
-          <!--begin::Error Message-->
-          <p v-if="errorMessage" class="text-danger text-center mt-3">
-            {{ errorMessage }}
-          </p>
-          <!--end::Error Message-->
+  
         </form>
         <!--end::Form-->
       </div>
@@ -101,60 +96,61 @@
 
   </template>
   
-<script lang="ts">
-import axios from "axios";
-import Swal from "sweetalert2";
-import { useRouter } from "vue-router"; // Import useRouter
-
-axios.defaults.withCredentials = true;
-
-export default {
-  data() {
-    return {
-      email: "",
-      password: "",
-      err:"",
-      errorMessage: null,
-    };
-  },
-  methods: {
-    async login() {
-      const router = useRouter(); // Initialize the router
-
-      try {
-        const response = await axios.post("http://13.251.160.30:4000/auth/login", {
-          email: this.email,
-          password: this.password,
-        });
-        localStorage.setItem("authToken", response.data.token);
-        localStorage.setItem('userEmail', response.data.user); 
-
-        Swal.fire({
-          text: "You have successfully logging in!",
-          icon: "success",
-          confirmButtonText: "OK, got it!",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-        }).then(() => {
-          router.push("/dashboard");
-        });
-      } catch (error: any) {
-        // Error alert
-        const errorMessage = error.response?.data?.error || "Login failed";
-        Swal.fire({
-          text: errorMessage,
-          icon: "error",
-          confirmButtonText: "Try again",
-          customClass: {
-            confirmButton: "btn btn-danger",
-          },
-        });
-      }
+  <script lang="ts">
+  import axios from "axios";
+  import Swal from "sweetalert2";
+  import { useRouter } from "vue-router";
+  import { defineComponent, ref } from "vue";
+  
+  axios.defaults.withCredentials = true;
+  
+  export default defineComponent({
+    setup() {
+      const email = ref("");
+      const password = ref("");
+      const router = useRouter();
+  
+      const login = async () => {
+        try {
+          const response = await axios.post("http://13.251.160.30:4000/auth/login", {
+            email: email.value,
+            password: password.value,
+          });
+          localStorage.setItem("authToken", response.data.token);
+          localStorage.setItem("userEmail", response.data.user);
+  
+          Swal.fire({
+            text: "You have successfully logged in!",
+            icon: "success",
+            confirmButtonText: "OK, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          }).then(() => {
+            router.push("/dashboard");
+          });
+        } catch (error: any) {
+          console.error(error);
+          Swal.fire({
+            text: "Invalid email or password",
+            icon: "error",
+            confirmButtonText: "Try again",
+            customClass: {
+              confirmButton: "btn btn-danger",
+            },
+          });
+        }
+      };
+  
+      return {
+        email,
+        password,
+        login,
+      };
     },
-  },
-};
-</script>
+  });
+  </script>
+  
   
   <style scoped>
 
