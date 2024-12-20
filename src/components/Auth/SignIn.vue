@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div class="login">
       <h2>Login</h2>
       <form @submit.prevent="login">
@@ -26,73 +26,133 @@
       </form>
       <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </div>
+  </template> -->
+  <template>
+
+    <div class="d-flex justify-content-center align-items-center min-vh-100">
+    <!--begin::Wrapper-->
+      <div class="w-lg-300px p-10 mx-auto">
+        <!--begin::Heading-->
+        <div class="text-center mb-10">
+          <h1 class="text-dark mb-3">Login</h1>
+        </div>
+        <!--end::Heading-->
+    
+        <!--begin::Form-->
+        <form @submit.prevent="login" class="form w-100">
+          <!--begin::Input group-->
+          <div class="fv-row mb-10">
+            <label for="email" class="form-label fs-6 fw-bold text-dark">Email</label>
+            <input
+              type="email"
+              id="email"
+              v-model="email"
+              class="form-control form-control-lg form-control-solid"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+          <!--end::Input group-->
+    
+          <!--begin::Input group-->
+          <div class="fv-row mb-10">
+            <label for="password" class="form-label fs-6 fw-bold text-dark">Password</label>
+            <input
+              type="password"
+              id="password"
+              v-model="password"
+              class="form-control form-control-lg form-control-solid"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          <!--end::Input group-->
+    
+          <!--begin::Actions-->
+          <div class="text-center">
+            <button
+              tabindex="3"
+              type="submit"
+              id="kt_sign_in_submit"
+              ref="submitButton"
+              class="btn btn-lg btn-primary w-100 mb-5"
+            >
+              <span class="indicator-label">Login</span>
+              <span class="indicator-progress">
+            Please wait...
+            <span
+              class="spinner-border spinner-border-sm align-middle ms-2"
+            ></span>
+          </span>
+            </button>
+          </div>
+          <!--end::Actions-->
+    
+          <!--begin::Error Message-->
+          <p v-if="errorMessage" class="text-danger text-center mt-3">
+            {{ errorMessage }}
+          </p>
+          <!--end::Error Message-->
+        </form>
+        <!--end::Form-->
+      </div>
+      <!--end::Wrapper-->      
+    </div>
+
   </template>
   
 <script lang="ts">
-  import axios from "axios";
+import axios from "axios";
+import Swal from "sweetalert2";
+axios.defaults.withCredentials = true;
 
-  axios.defaults.withCredentials = true;
+export default {
+  data() {
+    return {
+      email: "",
+      password: "",
+      err:"",
+      errorMessage: null,
+    };
+  },
+  methods: {
+    async login() {
+      try {
+        const response = await axios.post("http://13.251.160.30:4000/auth/login", {
+          email: this.email,
+          password: this.password,
+        });
+        localStorage.setItem("authToken", response.data.token);
+        localStorage.setItem('userEmail', response.data.user); 
 
-  export default {
-    data() {
-      return {
-        email: "",
-        password: "",
-        err:"",
-        errorMessage: null,
-      };
-    },
-    methods: {
-      async login() {
-        try {
-          const response = await axios.post("http://13.251.160.30:4000/auth/login", {
-            email: this.email,
-            password: this.password,
-          });
-          localStorage.setItem("authToken", response.data.token);
-          localStorage.setItem('userEmail', response.data.user);  // Store email
+        Swal.fire({
+          text: "You have successfully logging in!",
+          icon: "success",
+          confirmButtonText: "OK, got it!",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+        }).then(() => {
           this.$router.push("/dashboard");
-        } catch (error: any) {
-          this.errorMessage = error.response?.data?.error || 'Login failed';
-            // this.error = err.response?.data?.error || 'Login failed';
-        }
-      },
+        });
+      } catch (error: any) {
+        // Error alert
+        const errorMessage = error.response?.data?.error || "Login failed";
+        Swal.fire({
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "Try again",
+          customClass: {
+            confirmButton: "btn btn-danger",
+          },
+        });
+      }
     },
-  };
+  },
+};
   </script>
   
   <style scoped>
-  .login-container {
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background: #f9f9f9;
-  }
-  .form-group {
-    margin-bottom: 15px;
-  }
-  label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-  }
-  button {
-    width: 100%;
-    padding: 10px;
-    background: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-  }
-  .error {
-    color: red;
-    margin-top: 10px;
-  }
+
   </style>
   
