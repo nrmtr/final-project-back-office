@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard">
     <h1>Welcome to the Dashboard</h1>
-    <p>You are logged in!</p>
+    <p>You are logged in as: {{ userEmail }}</p>
     <button @click="logout">Logout</button>
   </div>
 </template>
@@ -9,11 +9,17 @@
 <script lang="ts">
 export default {
   name: 'Admin_Dashboard',
+  data() {
+    return {
+      userEmail: localStorage.getItem('userEmail') || 'Unknown',
+    };
+  },
   methods: {
 
     logout() {
       // Clear the token and redirect to login
       localStorage.removeItem('authToken');
+      localStorage.removeItem('userEmail');
       this.$router.push('/');
     },
   },

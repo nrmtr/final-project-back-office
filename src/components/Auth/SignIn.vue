@@ -45,11 +45,12 @@
     methods: {
       async login() {
         try {
-          const response = await axios.post("http://localhost:4000/auth/login", {
+          const response = await axios.post("http://13.251.160.30:4000/auth/login", {
             email: this.email,
             password: this.password,
           });
           localStorage.setItem("authToken", response.data.token);
+          localStorage.setItem('userEmail', response.data.user);  // Store email
           this.$router.push("/dashboard");
         } catch (error: any) {
           this.errorMessage = error.response?.data?.error || 'Login failed';
