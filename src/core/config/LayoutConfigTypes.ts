@@ -84,6 +84,7 @@ interface LayoutConfig {
   content: Content;
   footer: Footer;
 }
+const LayoutConfig = {} as LayoutConfig;
 
 export default LayoutConfig;
 

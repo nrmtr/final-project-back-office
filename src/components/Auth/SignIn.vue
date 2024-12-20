@@ -104,6 +104,8 @@
 <script lang="ts">
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useRouter } from "vue-router"; // Import useRouter
+
 axios.defaults.withCredentials = true;
 
 export default {
@@ -117,6 +119,8 @@ export default {
   },
   methods: {
     async login() {
+      const router = useRouter(); // Initialize the router
+
       try {
         const response = await axios.post("http://13.251.160.30:4000/auth/login", {
           email: this.email,
@@ -133,7 +137,7 @@ export default {
             confirmButton: "btn btn-primary",
           },
         }).then(() => {
-          this.$router.push("/dashboard");
+          router.push("/dashboard");
         });
       } catch (error: any) {
         // Error alert
@@ -150,7 +154,7 @@ export default {
     },
   },
 };
-  </script>
+</script>
   
   <style scoped>
 

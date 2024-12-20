@@ -7,6 +7,8 @@
 </template>
 
 <script lang="ts">
+import { useRouter } from "vue-router"; // Import useRouter
+
 export default {
   name: 'Admin_Dashboard',
   data() {
@@ -17,10 +19,12 @@ export default {
   methods: {
 
     logout() {
+      const router = useRouter(); // Initialize the router
+
       // Clear the token and redirect to login
       localStorage.removeItem('authToken');
       localStorage.removeItem('userEmail');
-      this.$router.push('/');
+      router.push('/');
     },
   },
 };
