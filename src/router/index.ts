@@ -1,22 +1,33 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../components/Auth/SignIn.vue'
-import Dashboard from '../components/Dashboard.vue'
+// import Dashboard from '../views/Dashboard.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   // history: createWebHistory('/back_office/'),
   routes: [
     {
       path: '/',
-      name: 'Login',
+      name: 'login',
       component: Login,
     },
     {
       path: '/dashboard',
       name: 'Dashboard',
-      component: Dashboard,
+      component: () => import('@/layouts/main-layout/MainLayout.vue'),
       meta : {
         requiresAuth: true
-      }
+      },
+      children: [
+        {
+          path: "/dashboard",
+          name: "dashboard",
+          component: () => import("@/views/Dashboard.vue"),
+          meta: {
+            pageTitle: "Dashboard",
+            breadcrumbs: ["Dashboards"],
+          },
+        },
+      ]
     }
   ],
 })

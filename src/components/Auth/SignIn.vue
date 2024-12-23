@@ -37,7 +37,7 @@
           <h1 class="text-dark mb-3">Login</h1>
         </div>
         <!--end::Heading-->
-    
+        
         <!--begin::Form-->
         <form @submit.prevent="login" class="form w-100">
           <!--begin::Input group-->
@@ -89,6 +89,7 @@
           <!--end::Actions-->
   
         </form>
+
         <!--end::Form-->
       </div>
       <!--end::Wrapper-->      
@@ -96,62 +97,63 @@
 
   </template>
   
-  <script lang="ts">
-  import axios from "axios";
-  import Swal from "sweetalert2";
-  import { useRouter } from "vue-router";
-  import { defineComponent, ref } from "vue";
+<script lang="ts">
+import axios from "axios";
+import Swal from "sweetalert2";
+import { useRouter } from "vue-router";
+import { defineComponent, ref } from "vue";
+
+axios.defaults.withCredentials = true;
+
+export default defineComponent({
+  setup() {
+    const email = ref("");
+    const password = ref("");
+    const router = useRouter();
+
+    const login = async () => {
+      try {
+        const response = await axios.post("http://13.251.160.30/api/auth/login", {
+          email: email.value,
+          password: password.value,
+        });
+        localStorage.setItem("authToken", response.data.token);
+        localStorage.setItem("userEmail", response.data.user);
+
+        Swal.fire({
+          text: "You have successfully logged in!",
+          icon: "success",
+          confirmButtonText: "OK, got it!",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+        }).then(() => {
+          router.push("/dashboard");
+        });
+      } catch (error: any) {
+        console.error(error);
+        Swal.fire({
+          text: "Invalid email or password",
+          icon: "error",
+          confirmButtonText: "Try again",
+          customClass: {
+            confirmButton: "btn btn-danger",
+          },
+        });
+      }
+    };
+
+    return {
+      email,
+      password,
+      login,
+    };
+  },
+});
+</script>
   
-  axios.defaults.withCredentials = true;
-  
-  export default defineComponent({
-    setup() {
-      const email = ref("");
-      const password = ref("");
-      const router = useRouter();
-  
-      const login = async () => {
-        try {
-          const response = await axios.post("http://13.251.160.30:4000/auth/login", {
-            email: email.value,
-            password: password.value,
-          });
-          localStorage.setItem("authToken", response.data.token);
-          localStorage.setItem("userEmail", response.data.user);
-  
-          Swal.fire({
-            text: "You have successfully logged in!",
-            icon: "success",
-            confirmButtonText: "OK, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          }).then(() => {
-            router.push("/dashboard");
-          });
-        } catch (error: any) {
-          console.error(error);
-          Swal.fire({
-            text: "Invalid email or password",
-            icon: "error",
-            confirmButtonText: "Try again",
-            customClass: {
-              confirmButton: "btn btn-danger",
-            },
-          });
-        }
-      };
-  
-      return {
-        email,
-        password,
-        login,
-      };
-    },
-  });
-  </script>
-  
-  
+
+   
   <style scoped>
 
   </style>
