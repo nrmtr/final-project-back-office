@@ -297,15 +297,15 @@
 import { getAssetPath } from "@/core/helpers/assets";
 import { defineComponent, ref } from "vue";
 import * as Yup from "yup";
-import { ErrorMessage, Field, Form as VForm } from "vee-validate";
+// import { ErrorMessage, Field, Form as VForm } from "vee-validate";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
   name: "two-factor-auth-modal",
   components: {
-    ErrorMessage,
-    Field,
-    VForm,
+    // ErrorMessage,
+    // Field,
+    // VForm,
   },
   setup() {
     const value = ref("apps");

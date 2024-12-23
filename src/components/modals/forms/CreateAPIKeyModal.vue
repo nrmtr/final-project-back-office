@@ -251,7 +251,7 @@
 import { getAssetPath } from "@/core/helpers/assets";
 import { defineComponent, ref } from "vue";
 import { hideModal } from "@/core/helpers/dom";
-import { ErrorMessage, Field, Form as VForm } from "vee-validate";
+import {  Field, Form as VForm } from "vee-validate";
 import * as Yup from "yup";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
@@ -265,7 +265,7 @@ interface APIData {
 export default defineComponent({
   name: "create-api-key-modal",
   components: {
-    ErrorMessage,
+    // ErrorMessage,
     Field,
     VForm,
   },

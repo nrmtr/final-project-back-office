@@ -112,12 +112,12 @@
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
 import { defineComponent } from "vue";
-import Dropdown1 from "@/components/dropdown/Dropdown1.vue";
+// import Dropdown1 from "@/components/dropdown/Dropdown1.vue";
 
 export default defineComponent({
   name: "kt-widget-2",
   components: {
-    Dropdown1,
+    // Dropdown1,
   },
   props: {
     widgetClasses: String,

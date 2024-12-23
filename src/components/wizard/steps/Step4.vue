@@ -234,13 +234,13 @@
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
 import { defineComponent } from "vue";
-import { ErrorMessage, Field } from "vee-validate";
+// import { ErrorMessage, Field } from "vee-validate";
 
 export default defineComponent({
   name: "step-4",
   components: {
-    Field,
-    ErrorMessage,
+    // Field,
+    // ErrorMessage,
   },
   setup() {
     return {

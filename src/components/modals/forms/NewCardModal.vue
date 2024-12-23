@@ -306,7 +306,7 @@
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
 import { defineComponent, ref } from "vue";
-import { ErrorMessage, Field, Form as VForm } from "vee-validate";
+// import { ErrorMessage, Field, Form as VForm } from "vee-validate";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { hideModal } from "@/core/helpers/dom";
 import * as Yup from "yup";
@@ -322,9 +322,9 @@ interface CardData {
 export default defineComponent({
   name: "new-card-modal",
   components: {
-    ErrorMessage,
-    Field,
-    VForm,
+    // ErrorMessage,
+    // Field,
+    // VForm,
   },
   setup() {
     const submitButtonRef = ref<null | HTMLButtonElement>(null);

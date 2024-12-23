@@ -353,7 +353,7 @@
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
 import { defineComponent, ref } from "vue";
-import { ErrorMessage, Field, Form as VForm } from "vee-validate";
+import { Field, Form as VForm } from "vee-validate";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import * as Yup from "yup";
@@ -373,7 +373,7 @@ interface NewAddressData {
 export default defineComponent({
   name: "new-address-modal",
   components: {
-    ErrorMessage,
+    // ErrorMessage,
     Field,
     VForm,
   },

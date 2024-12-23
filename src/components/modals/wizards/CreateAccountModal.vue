@@ -1079,7 +1079,8 @@ import { computed, defineComponent, onMounted, ref } from "vue";
 import { hideModal } from "@/core/helpers/dom";
 import { StepperComponent } from "@/assets/ts/components/_StepperComponent";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import { ErrorMessage, Field, useForm } from "vee-validate";
+// import { ErrorMessage, Field, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import * as Yup from "yup";
 
 interface Step1 {
@@ -1113,8 +1114,8 @@ interface KTCreateApp extends Step1, Step2, Step3, Step4 {}
 export default defineComponent({
   name: "create-account-modal",
   components: {
-    Field,
-    ErrorMessage,
+    // Field,
+    // ErrorMessage,
   },
   setup() {
     const _stepperObj = ref<StepperComponent | null>(null);
@@ -1197,7 +1198,7 @@ export default defineComponent({
       _stepperObj.value.goPrev();
     };
 
-    const handleStep = handleSubmit((values) => {
+    const handleStep = handleSubmit((values: KTCreateApp) => {
       resetForm({
         values: {
           ...formData.value,

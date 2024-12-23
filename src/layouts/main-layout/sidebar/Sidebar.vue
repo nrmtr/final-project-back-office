@@ -23,16 +23,13 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { displaySidebar } from "@/core/helpers/config";
-import KTSidebarLogo from "@/layouts/main-layout/sidebar/SidebarLogo.vue";
+
 import KTSidebarMenu from "@/layouts/main-layout/sidebar/SidebarMenu.vue";
-import KTSidebarFooter from "@/layouts/main-layout/sidebar/SidebarFooter.vue";
 
 export default defineComponent({
   name: "theme-sidebar",
   components: {
-    KTSidebarLogo,
     KTSidebarMenu,
-    KTSidebarFooter,
   },
   setup() {
     const sidebarRef = ref<HTMLFormElement | null>(null);
