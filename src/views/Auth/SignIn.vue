@@ -90,6 +90,7 @@
           });
           localStorage.setItem("authToken", response.data.token);
           localStorage.setItem("userEmail", response.data.user);
+          localStorage.setItem("userName", response.data.firstName);
   
           Swal.fire({
             text: "You have successfully logged in!",

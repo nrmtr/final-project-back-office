@@ -13,7 +13,7 @@
         <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_add_customer_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bold">Add a Customer</h2>
+          <h2 class="fw-bold">Add CPU Rank Information</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
@@ -50,11 +50,11 @@
               <!--begin::Input group-->
               <div class="fv-row mb-7">
                 <!--begin::Label-->
-                <label class="required fs-6 fw-semobold mb-2">Name</label>
+                <label class="required fs-6 fw-semobold mb-2">Processor</label>
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="name">
+                <el-form-item prop="processor">
                   <el-input
                     v-model="formData.name"
                     type="text"
@@ -69,7 +69,7 @@
               <div class="fv-row mb-7">
                 <!--begin::Label-->
                 <label class="fs-6 fw-semobold mb-2">
-                  <span class="required">Email</span>
+                  <span class="required">Rating</span>
 
                   <i
                     class="fas fa-exclamation-circle ms-1 fs-7"
@@ -88,9 +88,9 @@
               <!--end::Input group-->
 
               <!--begin::Input group-->
-              <div class="fv-row mb-15">
+              <div class="fv-row mb-7">
                 <!--begin::Label-->
-                <label class="fs-6 fw-semobold mb-2">Description</label>
+                <label class="fs-6 fw-semobold mb-2">Antutu 10</label>
                 <!--end::Label-->
 
                 <!--begin::Input-->
@@ -101,185 +101,62 @@
               </div>
               <!--end::Input group-->
 
-              <!--begin::Billing toggle-->
-              <div
-                class="fw-bold fs-3 rotate collapsible mb-7"
-                data-bs-toggle="collapse"
-                href="#kt_modal_add_customer_billing_info"
-                role="button"
-                aria-expanded="false"
-                aria-controls="kt_customer_view_details"
-              >
-                Shipping Information
-                <span class="ms-2 rotate-180">
-                  <KTIcon icon-name="down" icon-class="fs-3" />
-                </span>
+              <!--begin::Input group-->
+              <div class="fv-row mb-7">
+                <!--begin::Label-->
+                <label class="fs-6 fw-semobold mb-2">Geekbench 5</label>
+                <!--end::Label-->
+
+                <!--begin::Input-->
+                <el-form-item prop="description">
+                  <el-input v-model="formData.description" type="text" />
+                </el-form-item>
+                <!--end::Input-->
               </div>
-              <!--end::Billing toggle-->
+              <!--end::Input group-->
 
-              <!--begin::Billing form-->
-              <div
-                id="kt_modal_add_customer_billing_info"
-                class="collapse show"
-              >
-                <!--begin::Input group-->
-                <div class="d-flex flex-column mb-7 fv-row">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-semobold mb-2"
-                    >Address Line 1</label
-                  >
-                  <!--end::Label-->
+              <!--begin::Input group-->
+              <div class="fv-row mb-7">
+                <!--begin::Label-->
+                <label class="fs-6 fw-semobold mb-2">Cores</label>
+                <!--end::Label-->
 
-                  <!--begin::Input-->
-                  <el-form-item prop="addressLine">
-                    <el-input v-model="formData.addressLine" />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="d-flex flex-column mb-7 fv-row">
-                  <!--begin::Label-->
-                  <label class="fs-6 fw-semobold mb-2">Address Line 2</label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-input v-model="formData.addressLine2" />
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="d-flex flex-column mb-7 fv-row">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-semobold mb-2">Town</label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="town">
-                    <el-input v-model="formData.town" />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="row g-9 mb-7">
-                  <!--begin::Col-->
-                  <div class="col-md-6 fv-row">
-                    <!--begin::Label-->
-                    <label class="required fs-6 fw-semobold mb-2"
-                      >State / Province</label
-                    >
-                    <!--end::Label-->
-
-                    <!--begin::Input-->
-                    <el-form-item prop="state">
-                      <el-input v-model="formData.state" />
-                    </el-form-item>
-                    <!--end::Input-->
-                  </div>
-                  <!--end::Col-->
-
-                  <!--begin::Col-->
-                  <div class="col-md-6 fv-row">
-                    <!--begin::Label-->
-                    <label class="required fs-6 fw-semobold mb-2"
-                      >Post Code</label
-                    >
-                    <!--end::Label-->
-
-                    <!--begin::Input-->
-                    <el-form-item prop="postCode">
-                      <el-input v-model="formData.postCode" />
-                    </el-form-item>
-                    <!--end::Input-->
-                  </div>
-                  <!--end::Col-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="d-flex flex-column mb-7 fv-row">
-                  <!--begin::Label-->
-                  <label class="fs-6 fw-semobold mb-2">
-                    <span class="required">Country</span>
-
-                    <i
-                      class="fas fa-exclamation-circle ms-1 fs-7"
-                      data-bs-toggle="tooltip"
-                      title="Country of origination"
-                    ></i>
-                  </label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-select v-model="formData.country">
-                    <el-option value="">Select a Country...</el-option>
-                    <el-option
-                      v-for="(item, i) in countries"
-                      :key="`countries-select-option-${i}`"
-                      :value="item.code"
-                    >
-                      {{ item.name }}
-                    </el-option>
-                  </el-select>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row mb-7">
-                  <!--begin::Wrapper-->
-                  <div class="d-flex flex-stack">
-                    <!--begin::Label-->
-                    <div class="me-5">
-                      <!--begin::Label-->
-                      <label class="fs-6 fw-semobold"
-                        >Use as a billing adderess?</label
-                      >
-                      <!--end::Label-->
-
-                      <!--begin::Input-->
-                      <div class="fs-7 fw-semobold text-muted">
-                        If you need more info, please check budget planning
-                      </div>
-                      <!--end::Input-->
-                    </div>
-                    <!--end::Label-->
-
-                    <!--begin::Switch-->
-                    <label
-                      class="form-check form-switch form-check-custom form-check-solid"
-                    >
-                      <!--begin::Input-->
-                      <input
-                        class="form-check-input"
-                        name="billing"
-                        type="checkbox"
-                        value="1"
-                        id="kt_modal_add_customer_billing"
-                        checked
-                      />
-                      <!--end::Input-->
-
-                      <!--begin::Label-->
-                      <span
-                        class="form-check-label fw-semobold text-muted"
-                        for="kt_modal_add_customer_billing"
-                      >
-                        Yes
-                      </span>
-                      <!--end::Label-->
-                    </label>
-                    <!--end::Switch-->
-                  </div>
-                  <!--begin::Wrapper-->
-                </div>
-                <!--end::Input group-->
+                <!--begin::Input-->
+                <el-form-item prop="description">
+                  <el-input v-model="formData.description" type="text" />
+                </el-form-item>
+                <!--end::Input-->
               </div>
-              <!--end::Billing form-->
+              <!--end::Input group-->
+
+              <!--begin::Input group-->
+              <div class="fv-row mb-7">
+                <!--begin::Label-->
+                <label class="fs-6 fw-semobold mb-2">clock</label>
+                <!--end::Label-->
+
+                <!--begin::Input-->
+                <el-form-item prop="description">
+                  <el-input v-model="formData.description" type="text" />
+                </el-form-item>
+                <!--end::Input-->
+              </div>
+              <!--end::Input group-->
+
+              <!--begin::Input group-->
+              <div class="fv-row mb-7">
+                <!--begin::Label-->
+                <label class="fs-6 fw-semobold mb-2">GPU</label>
+                <!--end::Label-->
+
+                <!--begin::Input-->
+                <el-form-item prop="description">
+                  <el-input v-model="formData.description" type="text" />
+                </el-form-item>
+                <!--end::Input-->
+              </div>
+              <!--end::Input group-->
+
             </div>
             <!--end::Scroll-->
           </div>

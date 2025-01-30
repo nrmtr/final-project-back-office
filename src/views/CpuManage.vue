@@ -9,15 +9,7 @@
           bgColor="#F1416C"
           :bgImage="getAssetPath('media/patterns/vector-1.png')"
         />
-  
-        <!-- <Widget2
-          className="h-md-50 mb-5 mb-xl-10"
-          :icon="false"
-          stats="357"
-          description="Professionals"
-          labelColor="dark"
-          textColor="gray-300"
-        /> -->
+
       </div>
       <!--end::Col-->
       </div>
@@ -30,15 +22,15 @@
   <script lang="ts">
   import { getAssetPath } from "@/core/helpers/assets";
   import { defineComponent } from "vue";
-  import Widget1 from "@/components/dashboard-default-widgets/Widget1.vue";
-  // import Widget2 from "@/components/dashboard-default-widgets/Widget2.vue";
+//   import Widget1 from "@/components/dashboard-default-widgets/Widget1.vue";
+  import Widget2 from "@/components/dashboard-default-widgets/Widget2.vue";
 
   
   export default defineComponent({
-    name: "main-dashboard",
+    name: "cpu-manage",
     components: {
-      Widget1,
-      // Widget2
+    //   Widget1,
+      Widget2
     },
     setup() {
       return {

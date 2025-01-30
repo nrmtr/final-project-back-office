@@ -12,7 +12,7 @@ const MainMenuConfig: Array<MenuItem> = [
   {
     pages: [
       {
-        heading: "dashboard",
+        heading: "Dashboard",
         route: "/dashboard",
         keenthemesIcon: "element-11",
         bootstrapIcon: "bi-app-indicator",
@@ -237,82 +237,88 @@ const MainMenuConfig: Array<MenuItem> = [
   //     },
   //   ],
   // },
-  // {
-  //   heading: "apps",
-  //   route: "/apps",
-  //   pages: [
-  //     {
-  //       sectionTitle: "customers",
-  //       route: "/customers",
-  //       keenthemesIcon: "abstract-38",
-  //       bootstrapIcon: "bi-printer",
-  //       sub: [
-  //         {
-  //           heading: "gettingStarted",
-  //           route: "/apps/customers/getting-started",
-  //         },
-  //         {
-  //           heading: "customersListing",
-  //           route: "/apps/customers/customers-listing",
-  //         },
-  //         {
-  //           heading: "customerDetails",
-  //           route: "/apps/customers/customer-details",
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       sectionTitle: "subscriptions",
-  //       route: "/subscriptions",
-  //       keenthemesIcon: "basket",
-  //       bootstrapIcon: "bi-cart",
-  //       sub: [
-  //         {
-  //           heading: "getStarted",
-  //           route: "/apps/subscriptions/getting-started",
-  //         },
-  //         {
-  //           heading: "subscriptionList",
-  //           route: "/apps/subscriptions/subscription-list",
-  //         },
-  //         {
-  //           heading: "addSubscription",
-  //           route: "/apps/subscriptions/add-subscription",
-  //         },
-  //         {
-  //           heading: "viewSubscription",
-  //           route: "/apps/subscriptions/view-subscription",
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       heading: "calendarApp",
-  //       route: "/apps/calendar",
-  //       keenthemesIcon: "calendar-8",
-  //       bootstrapIcon: "bi-calendar3-event",
-  //     },
-  //     {
-  //       sectionTitle: "chat",
-  //       route: "/chat",
-  //       keenthemesIcon: "message-text-2",
-  //       bootstrapIcon: "bi-chat-left",
-  //       sub: [
-  //         {
-  //           heading: "privateChat",
-  //           route: "/apps/chat/private-chat",
-  //         },
-  //         {
-  //           heading: "groupChat",
-  //           route: "/apps/chat/group-chat",
-  //         },
-  //         {
-  //           heading: "drawerChat",
-  //           route: "/apps/chat/drawer-chat",
-  //         },
-  //       ],
-  //     },
-  //   ],
-  // },
+  {
+    heading: "apps",
+    route: "/apps",
+    pages: [
+      // {
+      //   sectionTitle: "customers",
+      //   route: "/customers",
+      //   keenthemesIcon: "abstract-38",
+      //   bootstrapIcon: "bi-printer",
+      //   sub: [
+      //     {
+      //       heading: "gettingStarted",
+      //       route: "/apps/customers/getting-started",
+      //     },
+      //     {
+      //       heading: "customersListing",
+      //       route: "/apps/customers/customers-listing",
+      //     },
+      //     {
+      //       heading: "customerDetails",
+      //       route: "/apps/customers/customer-details",
+      //     },
+      //   ],
+      // },
+      // {
+      //   sectionTitle: "subscriptions",
+      //   route: "/subscriptions",
+      //   keenthemesIcon: "basket",
+      //   bootstrapIcon: "bi-cart",
+      //   sub: [
+      //     {
+      //       heading: "getStarted",
+      //       route: "/apps/subscriptions/getting-started",
+      //     },
+      //     {
+      //       heading: "subscriptionList",
+      //       route: "/apps/subscriptions/subscription-list",
+      //     },
+      //     {
+      //       heading: "addSubscription",
+      //       route: "/apps/subscriptions/add-subscription",
+      //     },
+      //     {
+      //       heading: "viewSubscription",
+      //       route: "/apps/subscriptions/view-subscription",
+      //     },
+      //   ],
+      // },
+      {
+        heading: "จัดการ CPU",
+        route: "/cpu-manage",
+        keenthemesIcon: "phone",
+        bootstrapIcon: "bi-calendar3-event",
+      },
+      {
+        heading: "ปรับเรทการให้คะแนน",
+        route: "/rate-manage",
+        keenthemesIcon: "external-drive",
+        bootstrapIcon: "bi-calendar3-event",
+      },
+      {
+        sectionTitle: "จัดการโทรศัพท์",
+        route: "/chat",
+        keenthemesIcon: "devices",
+        bootstrapIcon: "bi-chat-left",
+        sub: [
+          {
+            heading: "",
+            route: "/apps/chat/private-chat",
+          },
+          {
+            heading: "Rate",
+            route: "/apps/chat/group-chat",
+          },
+          {
+            heading: "Phone",
+            route: "/apps/chat/drawer-chat",
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export default MainMenuConfig;

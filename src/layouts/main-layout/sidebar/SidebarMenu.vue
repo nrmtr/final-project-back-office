@@ -169,7 +169,7 @@ export default defineComponent({
   name: "sidebar-menu",
   components: {},
   setup() {
-    const { t, te } = useI18n();
+    const { te } = useI18n();
     const route = useRoute();
     const scrollElRef = ref<null | HTMLElement>(null);
 
@@ -181,7 +181,7 @@ export default defineComponent({
 
     const translate = (text: string) => {
       if (te(text)) {
-        return t(text);
+        return text;
       } else {
         return text;
       }
