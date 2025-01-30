@@ -1,5 +1,5 @@
 export interface IProcessor {
-    id: number;
+    id: number | null;
     processor: string;
     rating: string;
     antutu_10: string;

@@ -23,13 +23,13 @@
         > -->
         <!--end::Secondary button-->
         <!--begin::Primary button-->
-        <a
+        <!-- <a
           href="#"
           class="btn btn-sm fw-bold btn-primary"
           data-bs-toggle="modal"
           data-bs-target="#kt_modal_new_target"
           >Add Phone</a
-        >
+        > -->
         <!--end::Primary button-->
       </div>
       <!--end::Actions-->

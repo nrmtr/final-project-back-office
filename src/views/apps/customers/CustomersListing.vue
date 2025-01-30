@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useProcessors } from "@/core/data/useProcessor";
+import type { IProcessor } from "@/core/data/processor";
 
 const { processors, loading, error, addProcessor, updateProcessor, deleteProcessor } = useProcessors();
 
 const showModal = ref(false);
 const isEditing = ref(false);
-const processorForm = ref({
-  id: null,
+const processorForm = ref<IProcessor>({
+  id:  null,
   processor: "",
   rating: "",
   antutu_10: "",
@@ -15,6 +16,8 @@ const processorForm = ref({
   cores: "",
   clock: "",
   gpu: "",
+  createdAt: "",
+  updatedAt: "",
 });
 
 // Open Add Modal
@@ -29,6 +32,8 @@ const openAddModal = () => {
     cores: "",
     clock: "",
     gpu: "",
+    createdAt: "",
+    updatedAt: "",
   };
   showModal.value = true;
 };
@@ -82,7 +87,7 @@ const handleDelete = async (id: number) => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="processor in processors" :key="processor.id">
+        <tr v-for="processor in processors" :key="processor.id ?? 'temp-key'">
           <td>{{ processor.processor }}</td>
           <td>{{ processor.rating }}</td>
           <td>{{ processor.antutu_10 }}</td>
@@ -95,7 +100,7 @@ const handleDelete = async (id: number) => {
             <!-- Edit Button -->
             <button @click="openEditModal(processor)" class="edit-btn">Edit</button>
             <!-- Delete Button -->
-            <button @click="handleDelete(processor.id)" class="delete-btn">Delete</button>
+            <button @click="processor.id !== null ? handleDelete(processor.id) : null" class="delete-btn">Delete</button>
           </td>
         </tr>
       </tbody>

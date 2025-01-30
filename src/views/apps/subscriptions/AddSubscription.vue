@@ -34,23 +34,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import Customer from "@/components/subscriptions/add/Customer.vue";
-import Products from "@/components/subscriptions/add/Products.vue";
-import PaymentMethod from "@/components/subscriptions/add/PaymentMethod.vue";
-import AddSummary from "@/components/subscriptions/add/Summary.vue";
-import NewCardModal from "@/components/modals/forms/NewCardModal.vue";
-import CreateAccountModal from "@/components/modals/wizards/CreateAccountModal.vue";
+// import { defineComponent } from "vue";
+// import Customer from "@/components/subscriptions/add/Customer.vue";
+// import Products from "@/components/subscriptions/add/Products.vue";
+// import PaymentMethod from "@/components/subscriptions/add/PaymentMethod.vue";
+// import AddSummary from "@/components/subscriptions/add/Summary.vue";
+// import NewCardModal from "@/components/modals/forms/NewCardModal.vue";
+// import CreateAccountModal from "@/components/modals/wizards/CreateAccountModal.vue";
 
-export default defineComponent({
-  name: "kt-add-subscription",
-  components: {
-    AddSummary,
-    Customer,
-    Products,
-    PaymentMethod,
-    NewCardModal,
-    CreateAccountModal,
-  },
-});
+// export default defineComponent({
+//   name: "kt-add-subscription",
+//   components: {
+//     AddSummary,
+//     Customer,
+//     Products,
+//     PaymentMethod,
+//     NewCardModal,
+//     CreateAccountModal,
+//   },
+// });
 </script>
