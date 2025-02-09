@@ -297,26 +297,26 @@ const MainMenuConfig: Array<MenuItem> = [
         keenthemesIcon: "external-drive",
         bootstrapIcon: "bi-calendar3-event",
       },
-      {
-        sectionTitle: "จัดการโทรศัพท์",
-        route: "/chat",
-        keenthemesIcon: "devices",
-        bootstrapIcon: "bi-chat-left",
-        sub: [
-          {
-            heading: "",
-            route: "/apps/chat/private-chat",
-          },
-          {
-            heading: "Rate",
-            route: "/apps/chat/group-chat",
-          },
-          {
-            heading: "Phone",
-            route: "/apps/chat/drawer-chat",
-          },
-        ],
-      },
+      // {
+      //   sectionTitle: "เพิ่มโทรศัพท์",
+      //   route: "/chat", 
+      //   keenthemesIcon: "devices",
+      //   bootstrapIcon: "bi-chat-left",
+      //   sub: [
+      //     {
+      //       heading: "",
+      //       route: "/apps/chat/private-chat",
+      //     },
+      //     {
+      //       heading: "Rate",
+      //       route: "/apps/chat/group-chat",
+      //     },
+      //     {
+      //       heading: "Phone",
+      //       route: "/apps/chat/drawer-chat",
+      //     },
+      //   ],
+      // },
     ],
   },
 ];

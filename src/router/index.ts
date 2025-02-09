@@ -36,6 +36,15 @@ const router = createRouter({
             breadcrumbs: ["Apps", "Cpu Manage"],
           },
         },
+        {
+          path: "/rate-manage",
+          name: "rate-manage",
+          component: () => import("@/views/apps/rate/WeightList.vue"),
+          meta: {
+            pageTitle: "Rate Manage",
+            breadcrumbs: ["Apps", "Rate Manage"],
+          },
+        }
       ]
     },
   ],
