@@ -45,7 +45,7 @@ const updateWeight = async (id: number) => {
   if (!result.isConfirmed) return;
 
   try {
-    await axios.put(`http://localhost:4000/weights/${id}`, { rate: weight.rate });
+    await axios.put(`http://13.251.160.30/api/weights/${id}`, { rate: weight.rate });
     Swal.fire({
       icon: "success",
       title: "Success",
