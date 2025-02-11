@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
+import Swal from 'sweetalert2';
 
 interface Phone {
   id: number;
@@ -11,14 +12,65 @@ interface Phone {
   tags: string[];
 }
 
-const phones = ref<Phone[]>([]); // All phones fetched from the API
+interface Tag {
+  id: number;
+  name: string;
+}
+
+const phones = ref<Phone[]>([]);
 const loading = ref(false);
 const error = ref<string | null>(null);
 const selectedPhone = ref<Phone | null>(null);
+const filteredPhones = ref<Phone[]>([]);
 const showModal = ref(false);
-const currentPage = ref(1); // Current page
-const totalPages = ref(1); // Total pages from API
-const searchQuery = ref(""); // Search query
+const currentPage = ref(1);
+const totalPages = ref(1);
+const searchQuery = ref("");
+const editableTags = ref<number[]>([]); // Store tags as an array for el-select
+const availableTags = ref<Tag[]>([
+  { id: 1, name: "general" },
+  { id: 2, name: "gaming" },
+  { id: 3, name: "take beautiful photos" },
+  { id: 4, name: "rider" },
+  { id: 5, name: "ai features" },
+  { id: 6, name: "live streaming" },
+]);
+
+interface Advantage {
+  id: number;
+  description: string;
+}
+
+interface Disadvantage {
+  id: number;
+  description: string;
+}
+
+interface Review {
+  id: number;
+  review_link: string;
+}
+
+interface Shop {
+  id: number;
+  shop_link: string;
+}
+
+const advantages = ref<Advantage[]>([]); 
+const disadvantages = ref<Disadvantage[]>([]); 
+const reviews = ref<Review[]>([]);
+const shops = ref<Shop[]>([]);
+
+const editingAdvantage = ref<number | null>(null);
+const editingDisadvantage = ref<number | null>(null);
+const editingReview = ref<number | null>(null);
+const editingShop = ref<number | null>(null);
+
+const newAdvantage = ref("");
+const newDisadvantage = ref("");
+const newReview = ref("");
+const newShop = ref("");
+
 
 // Fetch phones from the API
 const fetchPhones = async (page: number = 1, search: string = "") => {
@@ -31,11 +83,11 @@ const fetchPhones = async (page: number = 1, search: string = "") => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        brand: ["samsung", "apple", "vivo", "xiaomi", "huawei", "oneplus", "oppo", "realme"],
+        brand: ["samsung", "apple", "vivo", "xiaomi", "huawei", "oneplus", "oppo", "realme","honor"],
         category: ["general", "gaming", "take beautiful photos", "rider", "ai features", "live streaming"],
         page: page,
-        limit: 50, // Fetch 50 items per page
-        search: search, // Include search query in the API request
+        limit: 50,
+        search: search,
       }),
     });
 
@@ -45,7 +97,8 @@ const fetchPhones = async (page: number = 1, search: string = "") => {
     if (!phoneData?.data) throw new Error("Invalid data structure");
 
     phones.value = phoneData.data;
-    totalPages.value = phoneData.totalPages; // Update total pages from API
+    filteredPhones.value = phoneData.data;
+    totalPages.value = phoneData.totalPages;
   } catch (err) {
     error.value = (err as Error).message || "An unknown error occurred";
   } finally {
@@ -55,8 +108,28 @@ const fetchPhones = async (page: number = 1, search: string = "") => {
 
 // Handle search
 const handleSearch = () => {
-  currentPage.value = 1; // Reset to first page on new search
+  // Reset to first page on new search
+  currentPage.value = 1;
+
+  // Fetch phones with search query
   fetchPhones(currentPage.value, searchQuery.value);
+
+  const query = searchQuery.value.toLowerCase();
+  filteredPhones.value = phones.value.filter((phone) => {
+    return Object.values(phone).some((value) => {
+      // Check if the query is found within the string fields
+      if (typeof value === 'string') {
+        return value.toLowerCase().includes(query);
+      }
+
+      // If the value is an array (e.g., tags), check if the query is found in any of its items
+      if (Array.isArray(value)) {
+        return value.some(tag => tag.toLowerCase().includes(query));
+      }
+
+      return false;
+    });
+  });
 };
 
 // Go to next page
@@ -76,13 +149,447 @@ const prevPage = () => {
 };
 
 // Open modal
-const openModal = (phone: Phone) => {
+const openModal = async (phone: Phone) => {
   if (!phone?.id || !phone?.name) {
     console.error("Invalid phone data:", phone);
     return;
   }
+  // editableTags.value = phone.tags; // Set tags as an array
+  // selectedPhone.value = { ...phone };
+  // showModal.value = true;
+
+  editableTags.value = phone.tags
+    .map(tag => availableTags.value.find(t => t.name === tag)?.id)
+    .filter(id => id !== undefined) as number[];
+
   selectedPhone.value = { ...phone };
   showModal.value = true;
+
+  try {
+    // Fetch advantages
+    const advantagesResponse = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness/id/${phone.id}?type=strength`);
+    if (advantagesResponse.ok) {
+      const advantagesData = await advantagesResponse.json();
+      advantages.value = advantagesData.data.map((item: any) =>({
+        id: item.id,
+        description: item.description
+      }));
+    } 
+
+    // Fetch disadvantages
+    const disadvantagesResponse = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness/id/${phone.id}?type=weakness`);
+    if (disadvantagesResponse.ok) {
+      const disadvantagesData = await disadvantagesResponse.json();
+      disadvantages.value = disadvantagesData.data.map((item: any) => ({
+        id: item.id,
+        description: item.description
+      }));
+    }
+
+    // Fetch reviews
+    const reviewsResponse = await fetch(`http://13.251.160.30/api/phone/reviews/id/${phone.id}`);
+    if (reviewsResponse.ok) {
+      const reviewsData = await reviewsResponse.json();
+      reviews.value = reviewsData.data.map((item: any) => ({
+        id: item.id,
+        review_link: item.review_link
+      }));
+    }
+    
+    // Fetch shops
+    const shopsResponse = await fetch(`http://13.251.160.30/api/phone/shops/id/${phone.id}`);
+    if (shopsResponse.ok) {
+      const shopsData = await shopsResponse.json();
+      shops.value = shopsData.data.map((item: any) => ({
+        id: item.id,
+        shop_link: item.shop_link
+      }));
+    }
+  } catch (error) {
+    console.error("Error fetching additional data: ", error);
+  }
+};
+
+// Function to update tags
+const updateTags = async () => {
+  if (!selectedPhone.value) return;
+
+  try {
+    const response = await fetch(`http://13.251.160.30/api/phone/update_tags`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify([
+        {
+          phone_id: selectedPhone.value.id,
+          tags: editableTags.value, // Send updated tags as an array
+        },
+      ]),
+    });
+
+    if (!response.ok) throw new Error("Failed to update tags");
+
+    showSuccessPopup("แท็กอัพเดทเรียบร้อย!");
+
+    // Immediately update local data
+    selectedPhone.value.tags = editableTags.value.map(tagId =>
+      availableTags.value.find(tag => tag.id === tagId)?.name || ""
+    );
+
+    phones.value = phones.value.map(phone =>
+      phone.id === selectedPhone.value?.id ? { ...phone, tags: selectedPhone.value!.tags } : phone
+    );
+
+    closeModal(); // Close modal after update
+    fetchPhones(currentPage.value, searchQuery.value);
+
+  } catch (error) {
+    showErrorPopup("Failed to update tags");
+    console.error("Error updating tags:", error);
+  }
+};
+
+const startEdit = (type: string, index: number) => {
+  if (type === 'advantage') {
+    editingAdvantage.value = index;
+  } else if (type === 'disadvantage') {
+    editingDisadvantage.value = index;
+  } else if (type === 'review') {
+    editingReview.value = index;
+  } else if (type === 'shop') {
+    editingShop.value = index;
+  }
+};
+
+const cancelEdit = (type: string) => {
+  if (type === 'advantage') {
+    editingAdvantage.value = null;
+  } else if (type === 'disadvantage') {
+    editingDisadvantage.value = null;
+  } else if (type === 'review') {
+    editingReview.value = null;
+  } else if (type === 'shop') {
+    editingShop.value = null;
+  }
+};
+
+const saveAdvantage = async (index: number) => {
+  try {
+    const response = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness/${advantages.value[index].id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "strength",
+        description: advantages.value[index],
+      }),
+    });
+    
+    if (!response.ok) throw new Error("Failed to save advantage");
+
+    editingAdvantage.value = null;
+  } catch (error) {
+    console.error("Error saving advantage: ",error);
+  }
+};
+
+const saveDisadvantage = async (index: number) => {
+  try {
+    const response = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness/${disadvantages.value[index].id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "weakness",
+        description: disadvantages.value[index],
+      }),
+    });
+
+    if (!response.ok) throw new Error("Failed to save disadvantage");
+
+    editingDisadvantage.value = null;
+  } catch (error) {
+    console.error("Error saving disadvantage: ",error);
+  }
+};
+
+const saveReview = async (index: number) => {
+  try {
+    const response = await fetch(`http://13.251.160.30/api/phone/reviews/${reviews.value[index].id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        review: reviews.value[index],
+      }),
+    });
+
+    if (!response.ok) throw new Error("Failed to save review");
+
+    editingReview.value = null;
+  } catch (error) {
+    console.error("Error saving review: ",error);
+  }
+};
+
+const saveShop = async (index: number) => {
+  try {
+    const response = await fetch(`http://13.251.160.30/api/phone/shops/${shops.value[index].id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        shop: shops.value[index],
+      }),
+    });
+
+    if (!response.ok) throw new Error("Failed to save shop");
+
+    editingShop.value = null;
+  } catch (error) {
+    console.error("Error saving shop: ",error);
+  }
+};
+
+const deleteAdvantage = async (index: number) => {
+  try {
+    const response = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness/${advantages.value[index].id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) throw new Error("Failed to delete advantage");
+
+    advantages.value.splice(index, 1);
+  } catch (error) {
+    console.error("Error deleting advantage: ",error);
+  }
+};
+
+const deleteDisadvantage = async (index: number) => {
+  try {
+    const response = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness/${disadvantages.value[index].id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) throw new Error("Failed to delete disadvantage");
+
+    disadvantages.value.splice(index, 1);
+  } catch (error) {
+    console.error("Error deleting disadvantage: ",error);
+  }
+};
+
+const deleteReview = async (index: number) => {
+  try {
+    const response = await fetch(`http://13.251.160.30/api/phone/reviews/${reviews.value[index].id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) throw new Error("Failed to delete review");
+
+    reviews.value.splice(index, 1);
+  } catch (error) {
+    console.error("Error deleting review: ",error);
+  }
+};
+
+const deleteShop = async (index: number) => {
+  try {
+    const response = await fetch(`http://13.251.160.30/api/phone/shops/${shops.value[index].id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) throw new Error("Failed to delete shop"); 
+
+    shops.value.splice(index, 1);
+  } catch (error) {
+    console.error("Error deleting shop: ",error);
+  }
+};
+
+const addAdvantage = async () => {
+  if (!newAdvantage.value || !selectedPhone.value) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        phone_id: selectedPhone.value.id,
+        type: "strength",
+        description: newAdvantage.value,
+      }),
+    });
+
+    if (!response.ok) throw new Error("Failed to add advantage");
+
+    const newAdvantageData = await response.json();
+    advantages.value.push({
+      id: newAdvantageData.id,
+      description: newAdvantageData.description,
+    });
+
+    newAdvantage.value = "";
+  } catch (error) {
+    console.error("Error adding advantage: ",error);
+  }
+};
+
+const addDisadvantage = async () => {
+  if (!newDisadvantage.value || !selectedPhone.value) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        phone_id: selectedPhone.value.id,
+        type: "weakness",
+        description: newDisadvantage.value,
+      }),
+    });
+
+    if (!response.ok) throw new Error("Failed to add disadvantage");
+
+    const newDisadvantageData = await response.json();
+    disadvantages.value.push({
+      id: newDisadvantageData.id,
+      description: newDisadvantageData.description,
+    });
+    newDisadvantage.value = "";
+  } catch (error) {
+    console.error("Error adding disadvantage: ",error);
+  }
+};
+
+const addReview = async () => {
+  if (!newReview.value || !selectedPhone.value) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://13.251.160.30/api/phone/reviews`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        phone_id: selectedPhone.value.id,
+        review_link: newReview.value,
+      }),
+    });
+
+    if (!response.ok) throw new Error("Failed to add review");
+
+    const newReviewData = await response.json();
+    reviews.value.push({
+      id: newReviewData.id,
+      review_link: newReviewData.review_link,
+    });
+    newReview.value = "";
+  } catch (error) {
+    console.error("Error adding review: ",error);
+  }
+};
+
+const addShop = async () => {
+  if (!newShop.value || !selectedPhone.value) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://13.251.160.30/api/phone/shops`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        phone_id: selectedPhone.value.id,
+        shop_link: newShop.value,
+      }),
+    });
+
+    if (!response.ok) throw new Error("Failed to add shop");
+
+    const newShopData = await response.json();
+    shops.value.push({
+      id: newShopData.id,
+      shop_link: newShopData.shop_link,
+    });
+    newShop.value = "";
+  } catch (error) {
+    console.error("Error adding shop: ",error);
+  }
+};
+
+const showSuccessPopup = (message: string) => {
+  Swal.fire({
+    icon: 'success',
+    title: 'สําเร็จ',
+    text: message,
+    showConfirmButton: true,
+    customClass: {
+      popup: "swal-custom-zindex",
+    },
+  });
+};
+
+const showErrorPopup = (message: string) => {
+  Swal.fire({
+    icon: 'error',
+    title: 'Oops...',
+    text: message,
+    showConfirmButton: true,
+    customClass: {
+      popup: "swal-custom-zindex",
+    },
+    didOpen: () => {
+        // Find the parent div with class 'swal2-container' and set its z-index
+        const swalContainer = document.querySelector('.swal2-container') as HTMLElement;
+        if (swalContainer) {
+          swalContainer.style.zIndex = '10000';
+        }
+      }
+  });
+};
+
+// const showWarningPopup = (message: string) => {
+//   Swal.fire({
+//     icon: 'warning',
+//     title: 'Warning',
+//     text: message,
+//     showConfirmButton: true,
+//     customClass: {
+//           popup: "swal-custom-zindex",
+//         },
+//   });
+// };
+
+
+const generalTags = [1]; // General tags (IDs) that should not be removed
+const handleRemoveTag = (tagId: number) => {
+
+  if (generalTags.includes(tagId)) {
+    Swal.fire({
+      icon: "warning",
+      title: "คุณไม่สามารถลบแท็ก General ได้",
+      text: "แท็กนี้จําเป็นและไม่สามารถลบได้",
+      showConfirmButton: true,
+      customClass: {
+        popup: "swal-custom-zindex",
+      },
+      didOpen: () => {
+        // Find the parent div with class 'swal2-container' and set its z-index
+        const swalContainer = document.querySelector('.swal2-container') as HTMLElement;
+        if (swalContainer) {
+          swalContainer.style.zIndex = '10000';
+        }
+      }
+    });
+
+    // Re-add the tag to prevent removal
+    if (!editableTags.value.includes(tagId)) {
+      editableTags.value.push(tagId);
+    }
+  } else {
+    // Allow removal of other tags
+    editableTags.value = editableTags.value.filter(id => id !== tagId);
+  }
 };
 
 // Close modal
@@ -97,23 +604,23 @@ onMounted(() => fetchPhones(currentPage.value));
 
 <template>
   <div class="phone-list">
-    <h2>Phone Listings</h2>
+    <h2>รายการโทรศัพท์</h2>
 
     <!-- Search Bar -->
     <div class="search-bar">
       <input
         v-model="searchQuery"
         type="text"
-        placeholder="Search by name or brand..."
+        placeholder="ค้นหาโดย ชื่อ หรือ ยี่ห้อ..."
         @input="handleSearch"
       />
     </div>
 
     <!-- Pagination (Top) -->
     <div class="pagination">
-      <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+      <button @click="prevPage" :disabled="currentPage === 1">ก่อนหน้า</button>
       <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+      <button @click="nextPage" :disabled="currentPage === totalPages">ถัดไป</button>
     </div>
     
     <!-- Loading and Error States -->
@@ -123,7 +630,7 @@ onMounted(() => fetchPhones(currentPage.value));
     <!-- Phone Grid -->
     <div v-else class="grid">
       <div
-        v-for="phone in phones"
+        v-for="phone in filteredPhones"
         :key="phone.id"
         class="card"
         @click="openModal(phone)"
@@ -137,30 +644,189 @@ onMounted(() => fetchPhones(currentPage.value));
 
     <!-- Pagination -->
     <div class="pagination">
-      <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+      <button @click="prevPage" :disabled="currentPage === 1">ก่อนหน้า</button>
       <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+      <button @click="nextPage" :disabled="currentPage === totalPages">ถัดไป</button>
     </div>
 
     <!-- Modal -->
+    <!-- Updated Modal -->
     <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
       <div class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true" @click.stop>
         <span class="close-btn" @click="closeModal" aria-label="Close modal">&times;</span>
-
+        
         <template v-if="selectedPhone">
-          <img :src="selectedPhone.image || 'fallback-image-url'" alt="Phone Image" class="modal-img" />
-          <h2 id="modal-title">{{ selectedPhone.name || 'No Name' }}</h2>
-          <p><strong>Brand:</strong> {{ selectedPhone.brand || 'Unknown' }}</p>
-          <p><strong>Tags:</strong> {{ selectedPhone.tags?.join(", ") || 'Unknown' }}</p>
-          <p><strong>Price:</strong> {{ selectedPhone.price || 'N/A' }}</p>
-        </template>
+          <div class="modal-header">
+            <img :src="selectedPhone.image || 'fallback-image-url'" alt="Phone Image" class="modal-img" />
+            <h2 id="modal-title">{{ selectedPhone.name || 'No Name' }}</h2>
+            <!-- <p><strong>Brand:</strong> {{ selectedPhone.brand || 'Unknown' }}</p> -->
+          </div>
 
-        <button @click="closeModal">Close</button>
+          <div class="modal-body">
+            <!-- Tags Section -->
+            <div class="modal-section">
+              <h4>Tags</h4>
+              <el-select
+                v-model="editableTags"
+                multiple
+                filterable
+                allow-create
+                default-first-option
+                placeholder="Choose tags for your phone"
+                popper-append-to-body="false"
+                :teleported="false"
+                class="full-width-select"
+                @remove-tag="handleRemoveTag"
+              >
+                <el-option
+                  v-for="tag in availableTags"
+                  :key="tag.id"
+                  :label="tag.name"
+                  :value="tag.id"
+                />
+              </el-select>
+            </div>
+
+            <!-- Advantages Section -->
+            <div class="modal-section">
+              <h4>Advantages</h4>
+              <ul class="feature-list">
+                <li v-for="(advantage, index) in advantages" :key="advantage.id" type="1">
+                  <template v-if="editingAdvantage === index">
+                    <div class="edit-item">
+                      <input type="text" v-model="advantage.description" class="edit-input" />
+                      <div class="button-group">
+                        <button class="btn btn-primary" @click="saveAdvantage(index)">Save</button>
+                        <button class="btn btn-danger" @click="cancelEdit('advantage')">Cancel</button>
+                      </div>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div class="list-item">
+                      <span>{{ advantage.description }}</span>
+                      <div class="button-group">
+                        <button class="btn btn-primary" @click="startEdit('advantage', index)">Edit</button>
+                        <button class="btn btn-danger" @click="deleteAdvantage(index)">Delete</button>
+                      </div>
+                    </div>
+                  </template>
+                </li>
+              </ul>
+              <div class="add-item">
+                <input type="text" v-model="newAdvantage" placeholder="Add new advantage" class="add-input" />
+                <button class="btn btn-success" @click="addAdvantage">Add</button>
+              </div>
+            </div>
+
+            <!-- Disadvantages Section -->
+            <div class="modal-section">
+              <h4>Disadvantages</h4>
+              <ul class="feature-list">
+                <li v-for="(disadvantage, index) in disadvantages" :key="disadvantage.id" type="1">
+                  <template v-if="editingDisadvantage === index">
+                    <div class="edit-item">
+                      <input type="text" v-model="disadvantage.description" class="edit-input" />
+                      <div class="button-group">
+                        <button class="btn btn-primary" @click="saveDisadvantage(index)">Save</button>
+                        <button class="btn btn-danger" @click="cancelEdit('disadvantage')">Cancel</button>
+                      </div>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div class="list-item">
+                      <span>{{ disadvantage.description }}</span>
+                      <div class="button-group">
+                        <button class="btn btn-primary" @click="startEdit('disadvantage', index)">Edit</button>
+                        <button class="btn btn-danger" @click="deleteDisadvantage(index)">Delete</button>
+                      </div>
+                    </div>
+                  </template>
+                </li>
+              </ul>
+              <div class="add-item">
+                <input type="text" v-model="newDisadvantage" placeholder="Add new disadvantage" class="add-input" />
+                <button class="btn btn-success" @click="addDisadvantage">Add</button>
+              </div>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="modal-section">
+              <h4>Reviews</h4>
+              <ul class="feature-list">
+                <li v-for="(review, index) in reviews" :key="review.id" type="1">
+                  <template v-if="editingReview === index">
+                    <div class="edit-item">
+                      <input type="text" v-model="review.review_link" class="edit-input" />
+                      <div class="button-group">
+                        <button class="btn btn-primary" @click="saveReview(index)">Save</button>
+                        <button class="btn btn-danger" @click="cancelEdit('review')">Cancel</button>
+                      </div>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div class="list-item">
+                      <a :href="review.review_link" target="_blank" class="link-item">{{ review.review_link }}</a>
+                      <div class="button-group">
+                        <button class="btn btn-primary" @click="startEdit('review', index)">Edit</button>
+                        <button class="btn btn-danger" @click="deleteReview(index)">Delete</button>
+                      </div>
+                    </div>
+                  </template>
+                </li>
+              </ul>
+              <div class="add-item">
+                <input type="url" v-model="newReview" placeholder="Add new review link" class="add-input" />
+                <button class="btn btn-success" @click="addReview">Add</button>
+              </div>
+            </div>
+
+            <!-- Shops Section -->
+            <div class="modal-section">
+              <h4>Shops</h4>
+              <ul class="feature-list">
+                <li v-for="(shop, index) in shops" :key="shop.id" type="1">
+                  <template v-if="editingShop === index">
+                    <div class="edit-item">
+                      <input type="text" v-model="shop.shop_link" class="edit-input" />
+                      <div class="button-group">
+                        <button class="btn btn-primary" @click="saveShop(index)">Save</button>
+                        <button class="btn btn-danger" @click="cancelEdit('shop')">Cancel</button>
+                      </div>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div class="list-item">
+                      <a :href="shop.shop_link" target="_blank" class="link-item">{{ shop.shop_link }}</a>
+                      <div class="button-group">
+                        <button class="btn btn-primary" @click="startEdit('shop', index)">Edit</button>
+                        <button class="btn btn-danger" @click="deleteShop(index)">Delete</button>
+                      </div>
+                    </div>
+                  </template>
+                </li>
+              </ul>
+              <div class="add-item">
+                <input type="url" v-model="newShop" placeholder="Add new shop link" class="add-input" />
+                <button class="btn btn-success" @click="addShop">Add</button>
+              </div>
+            </div>
+
+            <!-- Price Section -->
+            <div class="modal-section">
+              <h4>Price</h4>
+              <p class="price-display">{{ selectedPhone.price || 'N/A' }}</p>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" @click="updateTags">อัพเดท</button>
+            <button type="button" class="btn btn-danger" @click="closeModal">ปิด</button>
+          </div>
+        </template>
       </div>
     </div>
   </div>
 </template>
-
 
 <style scoped>
 .phone-list {
@@ -246,31 +912,10 @@ onMounted(() => fetchPhones(currentPage.value));
   /* border: 2px solid red; */
 }
 
-/* Modal Box */
-.modal {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-  position: relative;
-  width: 90%;
-  max-width: 400px;
-  height: auto;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-  margin: auto;
-  /* border: 2px solid blue;  */
-  /* background-color: yellow;  */
-  opacity: 1; /* Ensure visibility */
-  display: block; /* Ensure visibility */
-}
 
-/* Modal Image */
-.modal-img {
-  width: 100%;
-  max-height: 250px;
-  object-fit: contain;
-  margin-bottom: 10px;
-}
+
+/* Modal Box */
+
 
 /* Close Button */
 .close-btn {
@@ -295,6 +940,13 @@ onMounted(() => fetchPhones(currentPage.value));
   color: black;
 }
 
+.swal2-container {
+  z-index: 10000 !important;
+}
+
+.el-select-dropdown {
+  z-index: 10001 !important;
+}
 /* Responsive */
 @media (max-width: 768px) {
   .grid {
@@ -306,5 +958,112 @@ onMounted(() => fetchPhones(currentPage.value));
   .grid {
     grid-template-columns: 1fr;
   }
+}
+
+.modal {
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  width: 90%;
+  background: white;
+  border-radius: 12px;
+  position: relative;
+}
+
+.modal-header {
+  padding: 20px 20px 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  margin-bottom: 15px;
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.modal-section {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-section:last-child {
+  border-bottom: none;
+}
+
+.modal-section h4 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.1em;
+}
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list-item, .edit-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  margin-bottom: 8px;
+}
+
+.button-group {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-input, .add-input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+
+.add-item {
+  display: flex;
+  margin-top: 12px;
+}
+
+.link-item {
+  color: #2196F3;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.full-width-select {
+  width: 100%;
+}
+
+.modal-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+
+.price-display {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #2196F3;
+}
+
+/* Ensure el-select dropdown appears above modal */
+:deep(.el-select-dropdown) {
+  z-index: 10002 !important;
 }
 </style>
