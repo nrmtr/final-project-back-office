@@ -278,12 +278,12 @@ const saveAdvantage = async (index: number) => {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        type: "strength",
-        description: advantages.value[index],
+        description: advantages.value[index].description,
       }),
     });
     
     if (!response.ok) throw new Error("Failed to save advantage");
+
 
     editingAdvantage.value = null;
   } catch (error) {
@@ -297,8 +297,7 @@ const saveDisadvantage = async (index: number) => {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        type: "weakness",
-        description: disadvantages.value[index],
+        description: disadvantages.value[index].description,
       }),
     });
 
@@ -316,7 +315,7 @@ const saveReview = async (index: number) => {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        review: reviews.value[index],
+        review_link: reviews.value[index].review_link,
       }),
     });
 
@@ -334,7 +333,7 @@ const saveShop = async (index: number) => {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        shop: shops.value[index],
+        shop_link: shops.value[index].shop_link,
       }),
     });
 
@@ -343,6 +342,38 @@ const saveShop = async (index: number) => {
     editingShop.value = null;
   } catch (error) {
     console.error("Error saving shop: ",error);
+  }
+};
+
+const deletePhone = async (phoneId: number) => {
+  const confirmation = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: "คุณจะไม่สามารถกู้คืนโทรศัพท์นี้ได้!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'ใช่, ลบเลย!',
+    cancelButtonText: 'ยกเลิก',
+  });
+
+  if (confirmation.isConfirmed) {
+    try {
+      const response = await fetch(`http://13.251.160.30/api/phone/${phoneId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error("Failed to delete phone");
+
+      // Remove the deleted phone from the local list
+      phones.value = phones.value.filter(phone => phone.id !== phoneId);
+      filteredPhones.value = filteredPhones.value.filter(phone => phone.id !== phoneId);
+
+      showSuccessPopup("โทรศัพท์ถูกลบเรียบร้อยแล้ว!");
+    } catch (error) {
+      console.error("Error deleting phone:", error);
+      showErrorPopup("เกิดข้อผิดพลาดในการลบโทรศัพท์");
+    }
   }
 };
 
@@ -417,6 +448,7 @@ const addAdvantage = async () => {
         description: newAdvantage.value,
       }),
     });
+
 
     if (!response.ok) throw new Error("Failed to add advantage");
 
@@ -639,6 +671,18 @@ onMounted(() => fetchPhones(currentPage.value));
         <h3>{{ phone.name }}</h3>
         <p><strong>Brand:</strong> {{ phone.brand }}</p>
         <p><strong>Price:</strong> {{ phone.price }}</p>
+        <ul class="list-inline d-flex justify-content-end">
+          <li class="list-inline-item">
+            <button class="btn btn-danger btn-sm rounded d-flex align-items-center justify-content-center"
+              @click.stop="deletePhone(phone.id)" type="button"
+              data-toggle="tooltip" data-placement="top" title="Delete"
+              style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"
+              >
+              <i class="bi bi-trash" style="font-size: 1.2rem; line-height: 1; position: relative; top: 1px; left: 2px;"></i>
+            </button>
+          </li>          
+        </ul>
+
       </div>
     </div>
 
@@ -1061,6 +1105,7 @@ onMounted(() => fetchPhones(currentPage.value));
   font-weight: bold;
   color: #2196F3;
 }
+
 
 /* Ensure el-select dropdown appears above modal */
 :deep(.el-select-dropdown) {
