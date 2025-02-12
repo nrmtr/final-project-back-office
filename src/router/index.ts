@@ -28,6 +28,15 @@ const router = createRouter({
           },
         },
         {
+          path: "/add-smartphone",
+          name: "add-smartphone",
+          component: () => import("@/views/apps/AddPhone/AddPhone.vue"),
+          meta: {
+            pageTitle: "Add Smartphone",
+            breadcrumbs: ["Apps", "Add Smartphone"],
+          }
+        },
+        {
           path: "/cpu-manage",
           name: "cpu-manage",
           component: () => import("@/views/apps/customers/CustomersListing.vue"),

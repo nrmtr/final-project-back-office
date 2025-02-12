@@ -286,9 +286,14 @@ const MainMenuConfig: Array<MenuItem> = [
       //   ],
       // },
       {
+        heading: 'เพิ่มสมาร์ทโฟน',
+        route: "/add-smartphone",
+        keenthemesIcon: "phone",
+      },
+      {
         heading: "จัดการ CPU",
         route: "/cpu-manage",
-        keenthemesIcon: "phone",
+        keenthemesIcon: "technology",
         bootstrapIcon: "bi-calendar3-event",
       },
       {
@@ -297,6 +302,12 @@ const MainMenuConfig: Array<MenuItem> = [
         keenthemesIcon: "external-drive",
         bootstrapIcon: "bi-calendar3-event",
       },
+      {
+        heading: "Logs",
+        route: "/logs",
+        keenthemesIcon: "file",
+        bootstrapIcon: "bi-calendar3-event",
+      }
       // {
       //   sectionTitle: "เพิ่มโทรศัพท์",
       //   route: "/chat", 

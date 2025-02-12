@@ -709,7 +709,7 @@ onMounted(() => fetchPhones(currentPage.value));
           <div class="modal-body">
             <!-- Tags Section -->
             <div class="modal-section">
-              <h4>Tags</h4>
+              <h4>แท็ก</h4>
               <el-select
                 v-model="editableTags"
                 multiple
@@ -733,7 +733,7 @@ onMounted(() => fetchPhones(currentPage.value));
 
             <!-- Advantages Section -->
             <div class="modal-section">
-              <h4>Advantages</h4>
+              <h4>ข้อดี</h4>
               <ul class="feature-list">
                 <li v-for="(advantage, index) in advantages" :key="advantage.id" type="1">
                   <template v-if="editingAdvantage === index">
@@ -757,14 +757,14 @@ onMounted(() => fetchPhones(currentPage.value));
                 </li>
               </ul>
               <div class="add-item">
-                <input type="text" v-model="newAdvantage" placeholder="Add new advantage" class="add-input" />
+                <input type="text" v-model="newAdvantage" placeholder="เพิ่มข้อดี..." class="add-input" />
                 <button class="btn btn-success" @click="addAdvantage">Add</button>
               </div>
             </div>
 
             <!-- Disadvantages Section -->
             <div class="modal-section">
-              <h4>Disadvantages</h4>
+              <h4>ข้อเสีย</h4>
               <ul class="feature-list">
                 <li v-for="(disadvantage, index) in disadvantages" :key="disadvantage.id" type="1">
                   <template v-if="editingDisadvantage === index">
@@ -788,14 +788,14 @@ onMounted(() => fetchPhones(currentPage.value));
                 </li>
               </ul>
               <div class="add-item">
-                <input type="text" v-model="newDisadvantage" placeholder="Add new disadvantage" class="add-input" />
+                <input type="text" v-model="newDisadvantage" placeholder="เพิ่มข้อเสีย..." class="add-input" />
                 <button class="btn btn-success" @click="addDisadvantage">Add</button>
               </div>
             </div>
 
             <!-- Reviews Section -->
             <div class="modal-section">
-              <h4>Reviews</h4>
+              <h4>รีวิว</h4>
               <ul class="feature-list">
                 <li v-for="(review, index) in reviews" :key="review.id" type="1">
                   <template v-if="editingReview === index">
@@ -819,14 +819,14 @@ onMounted(() => fetchPhones(currentPage.value));
                 </li>
               </ul>
               <div class="add-item">
-                <input type="url" v-model="newReview" placeholder="Add new review link" class="add-input" />
+                <input type="url" v-model="newReview" placeholder="เพิ่มรีวิว..." class="add-input" />
                 <button class="btn btn-success" @click="addReview">Add</button>
               </div>
             </div>
 
             <!-- Shops Section -->
             <div class="modal-section">
-              <h4>Shops</h4>
+              <h4>ช็อป</h4>
               <ul class="feature-list">
                 <li v-for="(shop, index) in shops" :key="shop.id" type="1">
                   <template v-if="editingShop === index">
@@ -850,14 +850,14 @@ onMounted(() => fetchPhones(currentPage.value));
                 </li>
               </ul>
               <div class="add-item">
-                <input type="url" v-model="newShop" placeholder="Add new shop link" class="add-input" />
+                <input type="url" v-model="newShop" placeholder="เพิ่มช็อป..." class="add-input" />
                 <button class="btn btn-success" @click="addShop">Add</button>
               </div>
             </div>
 
             <!-- Price Section -->
             <div class="modal-section">
-              <h4>Price</h4>
+              <h4>ราคา</h4>
               <p class="price-display">{{ selectedPhone.price || 'N/A' }}</p>
             </div>
           </div>
