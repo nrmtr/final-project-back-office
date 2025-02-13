@@ -123,7 +123,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
           </div>
         </div>
         <div v-else>
-          <p>ได้ไม่พบโทรศัพท์, กรุณาเลือกแบรนด์</p>
+          <p>ไม่พบโทรศัพท์, กรุณาเลือกแบรนด์, คุณได้เพิ่มโทรศัพท์แบรนด์นี้ทั้งหมดแล้ว</p>
         </div>
       </div>
     </div>

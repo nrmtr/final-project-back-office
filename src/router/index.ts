@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../components/Auth/SignIn.vue'
+import { pa } from 'element-plus/es/locale/index.mjs';
 // import Dashboard from '../views/Dashboard.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +45,33 @@ const router = createRouter({
             pageTitle: "CPU Manage",
             breadcrumbs: ["Apps", "Cpu Manage"],
           },
+        },
+        {
+          path: "/normalized-manage",
+          name:" normalized-manage",
+          component: () => import("@/views/apps/NormalizedManage/NormalizedManage.vue"),
+          meta: {
+            pageTitle: "Normalized Manage",
+            breadcrumbs: ["Apps", "Normalized Manage"],
+          }
+        },
+        {
+          path: "/add-admin",
+          name: "add-admin",
+          component: () => import("@/views/apps/Admin/AddAdmin.vue"),
+          meta: {
+            pageTitle: "Add Admin",
+            breadcrumbs: ["Apps", "Add Admin"],
+          }
+        },
+        {
+          path: "/logs",
+          name: "logs",
+          component: () => import("@/views/apps/Logs/LogsList.vue"),
+          meta: {
+            pageTitle: "Logs",
+            breadcrumbs: ["Apps", "Logs"],
+          }
         },
         {
           path: "/rate-manage",

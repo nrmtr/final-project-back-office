@@ -300,7 +300,16 @@ const MainMenuConfig: Array<MenuItem> = [
         heading: "ปรับเรทการให้คะแนน",
         route: "/rate-manage",
         keenthemesIcon: "external-drive",
-        bootstrapIcon: "bi-calendar3-event",
+      },
+      {
+        heading: "ปรับค่ามาตรฐาน",
+        route: "/normalized-manage",
+        keenthemesIcon: "setting-2",
+      },
+      {
+        heading: "เพิ่มแอดมิน",
+        route: "/add-admin",
+        keenthemesIcon: "user-tick",
       },
       {
         heading: "Logs",
