@@ -47,7 +47,7 @@ import Swal from 'sweetalert2';
         this.loading = true;
         try {
           const response: AxiosResponse<ApiResponse> = await axios.get(
-            `http://localhost:4000/phone/brands/${brand_slug}`
+            `http://13.251.160.30/api/phone/brands/${brand_slug}`
           );
           const responseData = response.data.data;
   
@@ -63,7 +63,7 @@ import Swal from 'sweetalert2';
         try {
           // Make a POST request to add the phone to the database
           const response: AxiosResponse = await axios.post(
-            'http://localhost:4000/phone/add_phone',
+            'http://13.251.160.30/api/phone/add_phone',
             { slug }
           );
 
