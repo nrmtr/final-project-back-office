@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import Swal from 'sweetalert2';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 interface Phone {
   id: number;
   brand: string;
@@ -78,7 +79,7 @@ const fetchPhones = async (page: number = 1, search: string = "") => {
   error.value = null;
 
   try {
-    const API_URL = import.meta.env.VITE_API_URL || "http://13.251.160.30/api/phone/list";
+    const API_URL = `${API_BASE_URL}/phone/list`;
     const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -167,7 +168,7 @@ const openModal = async (phone: Phone) => {
 
   try {
     // Fetch advantages
-    const advantagesResponse = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness/id/${phone.id}?type=strength`);
+    const advantagesResponse = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/id/${phone.id}?type=strength`);
     if (advantagesResponse.ok) {
       const advantagesData = await advantagesResponse.json();
       advantages.value = advantagesData.data.map((item: any) =>({
@@ -177,7 +178,7 @@ const openModal = async (phone: Phone) => {
     } 
 
     // Fetch disadvantages
-    const disadvantagesResponse = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness/id/${phone.id}?type=weakness`);
+    const disadvantagesResponse = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/id/${phone.id}?type=weakness`);
     if (disadvantagesResponse.ok) {
       const disadvantagesData = await disadvantagesResponse.json();
       disadvantages.value = disadvantagesData.data.map((item: any) => ({
@@ -187,7 +188,7 @@ const openModal = async (phone: Phone) => {
     }
 
     // Fetch reviews
-    const reviewsResponse = await fetch(`http://13.251.160.30/api/phone/reviews/id/${phone.id}`);
+    const reviewsResponse = await fetch(`${API_BASE_URL}/phone/reviews/id/${phone.id}`);
     if (reviewsResponse.ok) {
       const reviewsData = await reviewsResponse.json();
       reviews.value = reviewsData.data.map((item: any) => ({
@@ -197,7 +198,7 @@ const openModal = async (phone: Phone) => {
     }
     
     // Fetch shops
-    const shopsResponse = await fetch(`http://13.251.160.30/api/phone/shops/id/${phone.id}`);
+    const shopsResponse = await fetch(`${API_BASE_URL}/phone/shops/id/${phone.id}`);
     if (shopsResponse.ok) {
       const shopsData = await shopsResponse.json();
       shops.value = shopsData.data.map((item: any) => ({
@@ -215,7 +216,7 @@ const updateTags = async () => {
   if (!selectedPhone.value) return;
 
   try {
-    const response = await fetch(`http://13.251.160.30/api/phone/update_tags`, {
+    const response = await fetch(`${API_BASE_URL}/phone/update_tags`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify([
@@ -274,7 +275,7 @@ const cancelEdit = (type: string) => {
 
 const saveAdvantage = async (index: number) => {
   try {
-    const response = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness/${advantages.value[index].id}`, {
+    const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${advantages.value[index].id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -293,7 +294,7 @@ const saveAdvantage = async (index: number) => {
 
 const saveDisadvantage = async (index: number) => {
   try {
-    const response = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness/${disadvantages.value[index].id}`, {
+    const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${disadvantages.value[index].id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -311,7 +312,7 @@ const saveDisadvantage = async (index: number) => {
 
 const saveReview = async (index: number) => {
   try {
-    const response = await fetch(`http://13.251.160.30/api/phone/reviews/${reviews.value[index].id}`, {
+    const response = await fetch(`${API_BASE_URL}/phone/reviews/${reviews.value[index].id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -329,7 +330,7 @@ const saveReview = async (index: number) => {
 
 const saveShop = async (index: number) => {
   try {
-    const response = await fetch(`http://13.251.160.30/api/phone/shops/${shops.value[index].id}`, {
+    const response = await fetch(`${API_BASE_URL}/phone/shops/${shops.value[index].id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -359,7 +360,7 @@ const deletePhone = async (phoneId: number) => {
 
   if (confirmation.isConfirmed) {
     try {
-      const response = await fetch(`http://13.251.160.30/api/phone/${phoneId}`, {
+      const response = await fetch(`${API_BASE_URL}/phone/${phoneId}`, {
         method: "DELETE",
       });
 
@@ -379,7 +380,7 @@ const deletePhone = async (phoneId: number) => {
 
 const deleteAdvantage = async (index: number) => {
   try {
-    const response = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness/${advantages.value[index].id}`, {
+    const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${advantages.value[index].id}`, {
       method: "DELETE",
     });
 
@@ -393,7 +394,7 @@ const deleteAdvantage = async (index: number) => {
 
 const deleteDisadvantage = async (index: number) => {
   try {
-    const response = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness/${disadvantages.value[index].id}`, {
+    const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${disadvantages.value[index].id}`, {
       method: "DELETE",
     });
 
@@ -407,7 +408,7 @@ const deleteDisadvantage = async (index: number) => {
 
 const deleteReview = async (index: number) => {
   try {
-    const response = await fetch(`http://13.251.160.30/api/phone/reviews/${reviews.value[index].id}`, {
+    const response = await fetch(`${API_BASE_URL}/phone/reviews/${reviews.value[index].id}`, {
       method: "DELETE",
     });
 
@@ -421,7 +422,7 @@ const deleteReview = async (index: number) => {
 
 const deleteShop = async (index: number) => {
   try {
-    const response = await fetch(`http://13.251.160.30/api/phone/shops/${shops.value[index].id}`, {
+    const response = await fetch(`${API_BASE_URL}/phone/shops/${shops.value[index].id}`, {
       method: "DELETE",
     });
 
@@ -439,7 +440,7 @@ const addAdvantage = async () => {
   }
 
   try {
-    const response = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness`, {
+    const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -470,7 +471,7 @@ const addDisadvantage = async () => {
   }
 
   try {
-    const response = await fetch(`http://13.251.160.30/api/phone/strength_and_weakness`, {
+    const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -499,7 +500,7 @@ const addReview = async () => {
   }
 
   try {
-    const response = await fetch(`http://13.251.160.30/api/phone/reviews`, {
+    const response = await fetch(`${API_BASE_URL}/phone/reviews`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -527,7 +528,7 @@ const addShop = async () => {
   }
 
   try {
-    const response = await fetch(`http://13.251.160.30/api/phone/shops`, {
+    const response = await fetch(`${API_BASE_URL}/phone/shops`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

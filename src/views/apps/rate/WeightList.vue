@@ -5,10 +5,11 @@ import Swal from "sweetalert2";
 
 const weights = ref<{ id: number; title: string; rate: number; isEditing: boolean }[]>([]);
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 // Fetch all weights
 const fetchWeights = async () => {
   try {
-    const response = await axios.get("http://13.251.160.30/api/weights");
+    const response = await axios.get(`${API_BASE_URL}/api/weights`);
     weights.value = response.data.map((w: any) => ({ ...w, isEditing: false }));
   } catch (error) {
     console.error("Error fetching weights:", error);
@@ -45,7 +46,7 @@ const updateWeight = async (id: number) => {
   if (!result.isConfirmed) return;
 
   try {
-    await axios.put(`http://13.251.160.30/api/weights/${id}`, { rate: weight.rate });
+    await axios.put(`${API_BASE_URL}/weights/${id}`, { rate: weight.rate });
     Swal.fire({
       icon: "success",
       title: "Success",
