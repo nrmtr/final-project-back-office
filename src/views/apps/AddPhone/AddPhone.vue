@@ -49,8 +49,9 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
           const response: AxiosResponse<ApiResponse> = await axios.get(
             `${API_BASE_URL}/phone/brands/${brand_slug}`
           );
+          console.log("Response data: ", response);
           const responseData = response.data.data;
-  
+            
           this.phones = responseData.phones;
         } catch (error) {
           console.error('Error fetching phone data:', error);
