@@ -173,7 +173,7 @@ const openModal = async (phone: Phone) => {
 
   try {
     // Fetch advantages
-    const advantagesResponse = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/id/${phone.id}/strength`);
+    const advantagesResponse = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${phone.id}/strength`);
     if (advantagesResponse.ok) {
       const advantagesData = await advantagesResponse.json();
       advantages.value = advantagesData.data.map((item: any) =>({
@@ -183,7 +183,7 @@ const openModal = async (phone: Phone) => {
     } 
 
     // Fetch disadvantages
-    const disadvantagesResponse = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/id/${phone.id}/weakness`);
+    const disadvantagesResponse = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${phone.id}/weakness`);
     if (disadvantagesResponse.ok) {
       const disadvantagesData = await disadvantagesResponse.json();
       disadvantages.value = disadvantagesData.data.map((item: any) => ({
