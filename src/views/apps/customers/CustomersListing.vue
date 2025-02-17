@@ -156,7 +156,7 @@ const handleDelete = async (id: number) => {
         </div>
       </div>
     </div>
-    <div v-if="showModal" class="modal-backdrop fade show"></div>
+
   </div>
 </template>
 

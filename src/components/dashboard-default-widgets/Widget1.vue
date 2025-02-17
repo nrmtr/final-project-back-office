@@ -151,13 +151,18 @@ const prevPage = () => {
 
 // Open modal
 const openModal = async (phone: Phone) => {
-  if (!phone?.id || !phone?.name) {
+  if (!phone?.id) {
     console.error("Invalid phone data:", phone);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Invalid phone data.',
+    });
     return;
   }
   // editableTags.value = phone.tags; // Set tags as an array
-  // selectedPhone.value = { ...phone };
-  // showModal.value = true;
+  selectedPhone.value = { ...phone };
+  showModal.value = true;
 
   editableTags.value = phone.tags
     .map(tag => availableTags.value.find(t => t.name === tag)?.id)
@@ -168,7 +173,7 @@ const openModal = async (phone: Phone) => {
 
   try {
     // Fetch advantages
-    const advantagesResponse = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/id/${phone.id}?type=strength`);
+    const advantagesResponse = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/id/${phone.id}/strength`);
     if (advantagesResponse.ok) {
       const advantagesData = await advantagesResponse.json();
       advantages.value = advantagesData.data.map((item: any) =>({
@@ -178,7 +183,7 @@ const openModal = async (phone: Phone) => {
     } 
 
     // Fetch disadvantages
-    const disadvantagesResponse = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/id/${phone.id}?type=weakness`);
+    const disadvantagesResponse = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/id/${phone.id}/weakness`);
     if (disadvantagesResponse.ok) {
       const disadvantagesData = await disadvantagesResponse.json();
       disadvantages.value = disadvantagesData.data.map((item: any) => ({
@@ -208,6 +213,11 @@ const openModal = async (phone: Phone) => {
     }
   } catch (error) {
     console.error("Error fetching additional data: ", error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Failed to fetch additional data.',
+    });
   }
 };
 
@@ -274,6 +284,15 @@ const cancelEdit = (type: string) => {
 };
 
 const saveAdvantage = async (index: number) => {
+  const advantage = advantages.value[index];
+  if (!advantage || !advantage.id) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Invalid advantage data.',
+    });
+    return;
+  }
   try {
     const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${advantages.value[index].id}`, {
       method: "PUT",
@@ -282,13 +301,25 @@ const saveAdvantage = async (index: number) => {
         description: advantages.value[index].description,
       }),
     });
-    
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'ข้อดีถูกบันทึกเรียบร้อยแล้ว',
+      });
+      closeModal();
+    }
     if (!response.ok) throw new Error("Failed to save advantage");
 
 
     editingAdvantage.value = null;
   } catch (error) {
     console.error("Error saving advantage: ",error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Failed to save advantage. Please try again.',
+    });
   }
 };
 
@@ -302,6 +333,14 @@ const saveDisadvantage = async (index: number) => {
       }),
     });
 
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'ข้อเสียถูกบันทึกเรียบร้อยแล้ว',
+      });
+      closeModal();
+    }
     if (!response.ok) throw new Error("Failed to save disadvantage");
 
     editingDisadvantage.value = null;
@@ -320,6 +359,15 @@ const saveReview = async (index: number) => {
       }),
     });
 
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'รีวิวถูกบันทึกเรียบร้อยแล้ว',
+      });
+      closeModal();
+    }
+
     if (!response.ok) throw new Error("Failed to save review");
 
     editingReview.value = null;
@@ -337,6 +385,14 @@ const saveShop = async (index: number) => {
         shop_link: shops.value[index].shop_link,
       }),
     });
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'ช็อปถูกบันทึกเรียบร้อยแล้ว',
+      });
+      closeModal();
+    }
 
     if (!response.ok) throw new Error("Failed to save shop");
 
@@ -379,16 +435,38 @@ const deletePhone = async (phoneId: number) => {
 };
 
 const deleteAdvantage = async (index: number) => {
+  const advantage = advantages.value[index];
+  if (!advantage || !advantage.id) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Invalid advantage data.',
+    });
+    return;
+  }
+
   try {
     const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${advantages.value[index].id}`, {
       method: "DELETE",
     });
-
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'ข้อดีลบเรียบร้อยแล้ว',
+      });
+      closeModal();
+    }
     if (!response.ok) throw new Error("Failed to delete advantage");
 
     advantages.value.splice(index, 1);
   } catch (error) {
     console.error("Error deleting advantage: ",error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Failed to delete advantage. Please try again.',
+    });
   }
 };
 
@@ -397,7 +475,14 @@ const deleteDisadvantage = async (index: number) => {
     const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${disadvantages.value[index].id}`, {
       method: "DELETE",
     });
-
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'ข้อเสียลบเรียบร้อยแล้ว',
+      })
+      closeModal();
+    }
     if (!response.ok) throw new Error("Failed to delete disadvantage");
 
     disadvantages.value.splice(index, 1);
@@ -412,6 +497,15 @@ const deleteReview = async (index: number) => {
       method: "DELETE",
     });
 
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'รีวิวลบเรียบร้อยแล้ว',
+      });
+      closeModal();
+    }
+
     if (!response.ok) throw new Error("Failed to delete review");
 
     reviews.value.splice(index, 1);
@@ -425,7 +519,14 @@ const deleteShop = async (index: number) => {
     const response = await fetch(`${API_BASE_URL}/phone/shops/${shops.value[index].id}`, {
       method: "DELETE",
     });
-
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'ช็อปลบเรียบร้อยแล้ว',
+      });
+      closeModal();
+    }
     if (!response.ok) throw new Error("Failed to delete shop"); 
 
     shops.value.splice(index, 1);
@@ -436,6 +537,11 @@ const deleteShop = async (index: number) => {
 
 const addAdvantage = async () => {
   if (!newAdvantage.value || !selectedPhone.value) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Please enter a valid advantage description.',
+    });
     return;
   }
 
@@ -446,9 +552,18 @@ const addAdvantage = async () => {
       body: JSON.stringify({
         phone_id: selectedPhone.value.id,
         type: "strength",
-        description: newAdvantage.value,
+        description: newAdvantage.value.trim(),
       }),
     });
+
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'ข้อดีถูกเพิ่มเรียบร้อยแล้ว',
+      });
+      closeModal();
+    }
 
 
     if (!response.ok) throw new Error("Failed to add advantage");
@@ -481,6 +596,15 @@ const addDisadvantage = async () => {
       }),
     });
 
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'ข้อเสียถูกเพิ่มเรียบร้อยแล้ว',
+      });
+      closeModal();
+    }
+
     if (!response.ok) throw new Error("Failed to add disadvantage");
 
     const newDisadvantageData = await response.json();
@@ -509,6 +633,15 @@ const addReview = async () => {
       }),
     });
 
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'รีวิวถูกเพิ่มเรียบร้อยแล้ว',
+      });
+      closeModal();
+    }
+
     if (!response.ok) throw new Error("Failed to add review");
 
     const newReviewData = await response.json();
@@ -536,6 +669,15 @@ const addShop = async () => {
         shop_link: newShop.value,
       }),
     });
+
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'ช็อปถูกเพิ่มเรียบร้อยแล้ว',
+      });
+      closeModal();
+    }
 
     if (!response.ok) throw new Error("Failed to add shop");
 
@@ -580,19 +722,6 @@ const showErrorPopup = (message: string) => {
       }
   });
 };
-
-// const showWarningPopup = (message: string) => {
-//   Swal.fire({
-//     icon: 'warning',
-//     title: 'Warning',
-//     text: message,
-//     showConfirmButton: true,
-//     customClass: {
-//           popup: "swal-custom-zindex",
-//         },
-//   });
-// };
-
 
 const generalTags = [1]; // General tags (IDs) that should not be removed
 const handleRemoveTag = (tagId: number) => {
@@ -701,10 +830,17 @@ onMounted(() => fetchPhones(currentPage.value));
         <span class="close-btn" @click="closeModal" aria-label="Close modal">&times;</span>
         
         <template v-if="selectedPhone">
-          <div class="modal-header">
-            <img :src="selectedPhone.image || 'fallback-image-url'" alt="Phone Image" class="modal-img" />
-            <h2 id="modal-title">{{ selectedPhone.name || 'No Name' }}</h2>
-            <!-- <p><strong>Brand:</strong> {{ selectedPhone.brand || 'Unknown' }}</p> -->
+          <div class="modal-header justify-content-center">
+            <div class="row">
+              <div class="col ">
+                <img :src="selectedPhone.image || 'fallback-image-url'" alt="Phone Image" class="modal-img" />
+                <div class="text-center">
+                  <h2 id="modal-title">{{ selectedPhone.name || 'No Name' }}</h2>
+
+                </div>
+              </div>
+            </div>
+
           </div>
 
           <div class="modal-body">
@@ -736,7 +872,7 @@ onMounted(() => fetchPhones(currentPage.value));
             <div class="modal-section">
               <h4>ข้อดี</h4>
               <ul class="feature-list">
-                <li v-for="(advantage, index) in advantages" :key="advantage.id" type="1">
+                <li v-for="(advantage, index) in advantages" :key="advantage.id" type="1" >
                   <template v-if="editingAdvantage === index">
                     <div class="edit-item">
                       <input type="text" v-model="advantage.description" class="edit-input" />
@@ -864,7 +1000,7 @@ onMounted(() => fetchPhones(currentPage.value));
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-success" @click="updateTags">อัพเดท</button>
+            <button type="button" class="btn btn-success" @click="updateTags">อัพเดทแท็ก</button>
             <button type="button" class="btn btn-danger" @click="closeModal">ปิด</button>
           </div>
         </template>
@@ -1060,8 +1196,17 @@ onMounted(() => fetchPhones(currentPage.value));
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
+  padding: 8px 0 0 5px;
   margin-bottom: 8px;
+}
+
+.li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  list-style: none;
 }
 
 .button-group {
