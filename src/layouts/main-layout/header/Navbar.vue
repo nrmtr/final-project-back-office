@@ -10,41 +10,8 @@
     <!--begin::Chat-->
 
     <!--end::Chat-->
-    <!--    &lt;!&ndash;begin::My apps links&ndash;&gt;-->
-    <!--    <div class="app-navbar-item ms-1 ms-md-4">-->
-    <!--      &lt;!&ndash;begin::Menu wrapper&ndash;&gt;-->
-    <!--      <div-->
-    <!--        class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px"-->
-    <!--        data-kt-menu-trigger="{default: 'click', lg: 'hover'}"-->
-    <!--        data-kt-menu-attach="parent"-->
-    <!--        data-kt-menu-placement="bottom-end"-->
-    <!--      >-->
-    <!--        <KTIcon icon-name="element-11" icon-class="fs-2" />-->
-    <!--      </div>-->
-    <!--      <KTQuickLinksMenu />-->
-    <!--      &lt;!&ndash;end::Menu wrapper&ndash;&gt;-->
-    <!--    </div>-->
-    <!--    &lt;!&ndash;end::My apps links&ndash;&gt;-->
     <!--begin::Theme mode-->
-    <div class="app-navbar-item ms-1 ms-md-3">
-      <!--begin::Menu toggle-->
-      <a
-        href="#"
-        class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-30px h-30px w-md-40px h-md-40px"
-        data-kt-menu-trigger="{default:'click', lg: 'hover'}"
-        data-kt-menu-attach="parent"
-        data-kt-menu-placement="bottom-end"
-      >
-        <KTIcon
-          v-if="themeMode === 'light'"
-          icon-name="night-day"
-          icon-class="fs-2"
-        />
-        <KTIcon v-else icon-name="moon" icon-class="fs-2" />
-      </a>
-      <!--begin::Menu toggle-->
-      <KTThemeModeSwitcher />
-    </div>
+
     <!--end::Theme mode-->
     <!--begin::User menu-->
     <div class="app-navbar-item ms-1 ms-md-4" id="kt_header_user_menu_toggle">

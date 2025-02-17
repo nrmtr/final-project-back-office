@@ -20,36 +20,7 @@
       </router-link>
     </div>
     <!--end::Menu item-->
-    <!--begin::Menu item-->
-    <div class="menu-item px-3 my-0">
-      <router-link
-        :to="path"
-        :class="{ active: themeMode === 'dark' }"
-        class="menu-link px-3 py-2"
-        @click="setMode('dark')"
-      >
-        <span class="menu-icon" data-kt-element="icon">
-          <KTIcon icon-name="moon" icon-class="fs-2" />
-        </span>
-        <span class="menu-title">Dark</span>
-      </router-link>
-    </div>
-    <!--end::Menu item-->
-    <!--begin::Menu item-->
-    <div class="menu-item px-3 my-0">
-      <router-link
-        :to="path"
-        :class="{ active: themeMode === 'system' }"
-        class="menu-link px-3 py-2"
-        @click="setMode('system')"
-      >
-        <span class="menu-icon" data-kt-element="icon">
-          <KTIcon icon-name="screen" icon-class="fs-2" />
-        </span>
-        <span class="menu-title">System</span>
-      </router-link>
-    </div>
-    <!--end::Menu item-->
+
   </div>
   <!--end::Menu-->
 </template>
@@ -75,12 +46,12 @@ export default defineComponent({
 
     const path = computed(() => route.path);
 
-    const setMode = (mode: "dark" | "light" | "system") => {
-      let configMode = mode;
+    const setMode = (mode: "light" ) => {
+      const configMode = mode;
 
       storeConfig.setLayoutConfigProperty("general.mode", configMode);
 
-      storeTheme.setThemeMode(configMode);
+      storeTheme.setThemeMode();
     };
 
     return {

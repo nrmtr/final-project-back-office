@@ -730,7 +730,7 @@ export default defineComponent({
       const target = e.target as HTMLInputElement;
 
       storeConfig.setLayoutConfigProperty("general.mode", target.value);
-      storeTheme.setThemeMode(target.value as "dark" | "light" | "system");
+      storeTheme.setThemeMode();
 
       // save new config to localStorage
       localStorage.setItem(LS_CONFIG_NAME_KEY, JSON.stringify(config.value));

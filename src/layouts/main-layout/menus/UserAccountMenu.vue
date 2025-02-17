@@ -31,16 +31,12 @@
     </div>
     <!--end::Menu item-->
 
-    <!--begin::Menu separator-->
-    <div class="separator my-2"></div>
-    <!--end::Menu separator-->
-
     <!--begin::Menu item-->
-    <div class="menu-item px-5">
+    <!-- <div class="menu-item px-5">
       <router-link to="/pages/profile/overview" class="menu-link px-5">
         My Profile
       </router-link>
-    </div>
+    </div> -->
     <!--end::Menu item-->
 
 
@@ -72,7 +68,7 @@
 
     <!--begin::Menu item-->
     <div class="menu-item px-5 my-1">
-      <router-link to="/pages/profile/overview" class="menu-link px-5">
+      <router-link to="/account-settings" class="menu-link px-5">
         Account Settings
       </router-link>
     </div>
@@ -103,6 +99,7 @@ export default defineComponent({
     const store = useAuthStore();
     const userName = ref(localStorage.getItem("userName") || "Unknown");
     const userEmail = ref(localStorage.getItem("userEmail") || "Unknown");
+
     i18n.locale.value = localStorage.getItem("lang")
       ? (localStorage.getItem("lang") as string)
       : "en";

@@ -1,33 +1,4 @@
-<!-- <template>
-    <div class="login">
-      <h2>Login</h2>
-      <form @submit.prevent="login">
-        <div class="form-group">
-          <label for="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            v-model="email"
-            placeholder="Enter your email"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            v-model="password"
-            placeholder="Enter your password"
-            required
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
-      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-    </div>
-  </template> -->
-  <template>
+<template>
 
     <div class="d-flex justify-content-center align-items-center min-vh-100">
     <!--begin::Wrapper-->
@@ -95,7 +66,7 @@
       <!--end::Wrapper-->      
     </div>
 
-  </template>
+</template>
   
 <script lang="ts">
 import axios from "axios";
@@ -104,6 +75,7 @@ import { useRouter } from "vue-router";
 import { defineComponent, ref } from "vue";
 
 axios.defaults.withCredentials = true;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default defineComponent({
   setup() {
@@ -113,13 +85,15 @@ export default defineComponent({
 
     const login = async () => {
       try {
-        const response = await axios.post("http://13.251.160.30/api/auth/login", {
+        const response = await axios.post(`${API_BASE_URL}/auth/login`, {
           email: email.value,
           password: password.value,
         });
-        localStorage.setItem("authToken", response.data.token);
-        localStorage.setItem("userEmail", response.data.user);
-
+        const {token,user,name} = response.data;
+        localStorage.setItem("authToken", token);
+        localStorage.setItem("userName", name);
+        localStorage.setItem("userEmail", user);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         Swal.fire({
           text: "You have successfully logged in!",
           icon: "success",

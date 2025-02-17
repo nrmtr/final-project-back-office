@@ -2,9 +2,7 @@
 import { defineComponent, nextTick, onBeforeMount, onMounted } from "vue";
 import { RouterView } from "vue-router";
 import { useConfigStore } from "@/stores/config";
-import { useThemeStore } from "@/stores/theme";
 import { useBodyStore } from "@/stores/body";
-import { themeConfigValue } from "@/core/helpers/config";
 import { initializeComponents } from "@/core/plugins/keenthemes";
 
 export default defineComponent({
@@ -14,7 +12,7 @@ export default defineComponent({
   },
   setup() {
     const configStore = useConfigStore();
-    const themeStore = useThemeStore();
+    // const themeStore = useThemeStore();
     const bodyStore = useBodyStore();
 
     onBeforeMount(() => {
@@ -27,7 +25,7 @@ export default defineComponent({
       /**
        *  Sets a mode from configuration
        */
-      themeStore.setThemeMode(themeConfigValue.value);
+      // themeStore.setThemeMode(themeConfigValue.value);
     });
 
     onMounted(() => {
@@ -67,8 +65,15 @@ export default defineComponent({
 @import "assets/sass/plugins";
 @import "assets/sass/style";
 
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@100..900&display=swap");
+
+.custom-font {
+  font-family: 'Noto Serif Thai' ;
+}
 #app {
   display: contents;
 }
+
+
 </style>
 

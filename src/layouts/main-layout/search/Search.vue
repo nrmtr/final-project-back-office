@@ -12,13 +12,13 @@
         data-kt-menu-flip="bottom"
       >
         <!--begin::Search toggle-->
-        <div class="d-flex align-items-center" id="kt_header_search_toggle">
+        <!-- <div class="d-flex align-items-center" id="kt_header_search_toggle">
           <div
             class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px"
           >
             <KTIcon icon-name="magnifier" icon-class="fs-2" />
           </div>
-        </div>
+        </div> -->
         <!--end::Search toggle-->
       </div>
       <!--end::Search-->
