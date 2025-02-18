@@ -23,14 +23,14 @@
   import { getAssetPath } from "@/core/helpers/assets";
   import { defineComponent } from "vue";
 //   import Widget1 from "@/components/dashboard-default-widgets/Widget1.vue";
-  import Widget2 from "@/components/dashboard-default-widgets/Widget2.vue";
+
 
   
   export default defineComponent({
     name: "cpu-manage",
     components: {
     //   Widget1,
-      Widget2
+      
     },
     setup() {
       return {

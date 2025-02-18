@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import Swal from 'sweetalert2';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -36,6 +36,9 @@ const availableTags = ref<Tag[]>([
   { id: 5, name: "ai features" },
   { id: 6, name: "live streaming" },
 ]);
+const editingPrice = ref(false);
+const newPrice = ref("");
+
 
 interface Advantage {
   id: number;
@@ -163,6 +166,7 @@ const openModal = async (phone: Phone) => {
   // editableTags.value = phone.tags; // Set tags as an array
   selectedPhone.value = { ...phone };
   showModal.value = true;
+  newPrice.value = phone.price;
 
   editableTags.value = phone.tags
     .map(tag => availableTags.value.find(t => t.name === tag)?.id)
@@ -392,6 +396,7 @@ const saveShop = async (index: number) => {
         text: 'ช็อปถูกบันทึกเรียบร้อยแล้ว',
       });
       closeModal();
+      fetchPhones(currentPage.value, searchQuery.value);
     }
 
     if (!response.ok) throw new Error("Failed to save shop");
@@ -401,6 +406,113 @@ const saveShop = async (index: number) => {
     console.error("Error saving shop: ",error);
   }
 };
+
+const formatNumberWithCommas = (number: string): string => {
+  return number.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const removeCommas = (str: string): string => {
+  return str.replace(/,/g, '');
+};
+
+const validateAndFormatPrice = (value: string): string => {
+  // Remove any commas and non-digit characters
+  const cleanValue = removeCommas(value).replace(/[^\d]/g, '');
+  
+  // Return empty string if no valid digits
+  if (!cleanValue) return '';
+  
+  // Convert to number and format with commas
+  const numValue = parseInt(cleanValue);
+  return formatNumberWithCommas(numValue.toString());
+};
+
+watch(newPrice, (value) => {
+  if (value) {
+    newPrice.value = validateAndFormatPrice(value);
+  }
+});
+
+const savePrice = async () => {
+  if (!selectedPhone.value || !newPrice.value) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Invalid price data.', 
+    });
+    return;
+  }
+  const priceWithoutCommas = removeCommas(newPrice.value);
+  if (!priceWithoutCommas) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'โปรดกรอกราคาที่ถูกต้อง (เฉพาะตัวเลขเท่านั้น)',
+    })
+  }
+  // Validate price before saving
+  const validatedPrice = validateAndFormatPrice(newPrice.value);
+  if (!validatedPrice) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Please enter a valid price (numbers only).', 
+    });
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/phone/update_price`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        phone_id: selectedPhone.value.id,
+        price: priceWithoutCommas,
+        // price: validatedPrice,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update price");
+    }
+
+    const formattedPrice = formatNumberWithCommas(priceWithoutCommas);
+    selectedPhone.value.price = formattedPrice;
+    // selectedPhone.value.price = newPrice.value.trim();
+    // phones.value = phones.value.map(phone =>
+    //   phone.id === selectedPhone.value?.id ? { ...phone, price: newPrice.value.trim() } : phone
+    // );
+    phones.value = phones.value.map(phone =>
+      phone.id === selectedPhone.value?.id ? { ...phone, price: formattedPrice } : phone
+    );
+
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'สำเร็จ',
+        text: 'อัพเดทราคาเรียบร้อยแล้ว!',
+      });      
+    }
+    closeModal();
+    fetchPhones(currentPage.value, searchQuery.value);
+
+    editingPrice.value = false; // Exit edit mode
+
+  } catch (error) {
+    console.error("Error updating price: ", error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Failed to update price. Please try again.',
+    });
+  }
+}
+
+const formatDisplayPrice = (price: string): string => {
+  if (!price) return '';
+  return formatNumberWithCommas(removeCommas(price));
+};
+
 
 const deletePhone = async (phoneId: number) => {
   const confirmation = await Swal.fire({
@@ -800,7 +912,7 @@ onMounted(() => fetchPhones(currentPage.value));
         <img :src="phone.image || 'fallback-image-url'" alt="Phone Image" class="phone-img" />
         <h3>{{ phone.name }}</h3>
         <p><strong>Brand:</strong> {{ phone.brand }}</p>
-        <p><strong>Price:</strong> {{ phone.price }}</p>
+        <p><strong>Price:</strong> {{ formatDisplayPrice(phone.price) }}</p>
         <ul class="list-inline d-flex justify-content-end">
           <li class="list-inline-item">
             <button class="btn btn-danger btn-sm rounded d-flex align-items-center justify-content-center"
@@ -886,8 +998,8 @@ onMounted(() => fetchPhones(currentPage.value));
                     <div class="list-item">
                       <span>{{ advantage.description }}</span>
                       <div class="button-group">
-                        <button class="btn btn-primary" @click="startEdit('advantage', index)">Edit</button>
-                        <button class="btn btn-danger" @click="deleteAdvantage(index)">Delete</button>
+                        <button class="btn btn-primary" @click="startEdit('advantage', index)">แก้ไข</button>
+                        <button class="btn btn-danger" @click="deleteAdvantage(index)">ลบ</button>
                       </div>
                     </div>
                   </template>
@@ -895,7 +1007,7 @@ onMounted(() => fetchPhones(currentPage.value));
               </ul>
               <div class="add-item">
                 <input type="text" v-model="newAdvantage" placeholder="เพิ่มข้อดี..." class="add-input" />
-                <button class="btn btn-success" @click="addAdvantage">Add</button>
+                <button class="btn btn-success" @click="addAdvantage">เพิ่ม</button>
               </div>
             </div>
 
@@ -917,8 +1029,8 @@ onMounted(() => fetchPhones(currentPage.value));
                     <div class="list-item">
                       <span>{{ disadvantage.description }}</span>
                       <div class="button-group">
-                        <button class="btn btn-primary" @click="startEdit('disadvantage', index)">Edit</button>
-                        <button class="btn btn-danger" @click="deleteDisadvantage(index)">Delete</button>
+                        <button class="btn btn-primary" @click="startEdit('disadvantage', index)">แก้ไข</button>
+                        <button class="btn btn-danger" @click="deleteDisadvantage(index)">ลบ</button>
                       </div>
                     </div>
                   </template>
@@ -926,7 +1038,7 @@ onMounted(() => fetchPhones(currentPage.value));
               </ul>
               <div class="add-item">
                 <input type="text" v-model="newDisadvantage" placeholder="เพิ่มข้อเสีย..." class="add-input" />
-                <button class="btn btn-success" @click="addDisadvantage">Add</button>
+                <button class="btn btn-success" @click="addDisadvantage">เพิ่ม</button>
               </div>
             </div>
 
@@ -948,8 +1060,8 @@ onMounted(() => fetchPhones(currentPage.value));
                     <div class="list-item">
                       <a :href="review.review_link" target="_blank" class="link-item">{{ review.review_link }}</a>
                       <div class="button-group">
-                        <button class="btn btn-primary" @click="startEdit('review', index)">Edit</button>
-                        <button class="btn btn-danger" @click="deleteReview(index)">Delete</button>
+                        <button class="btn btn-primary" @click="startEdit('review', index)">แก้ไข</button>
+                        <button class="btn btn-danger" @click="deleteReview(index)">ลบ</button>
                       </div>
                     </div>
                   </template>
@@ -957,7 +1069,7 @@ onMounted(() => fetchPhones(currentPage.value));
               </ul>
               <div class="add-item">
                 <input type="url" v-model="newReview" placeholder="เพิ่มรีวิว..." class="add-input" />
-                <button class="btn btn-success" @click="addReview">Add</button>
+                <button class="btn btn-success" @click="addReview">เพิ่ม</button>
               </div>
             </div>
 
@@ -979,8 +1091,8 @@ onMounted(() => fetchPhones(currentPage.value));
                     <div class="list-item">
                       <a :href="shop.shop_link" target="_blank" class="link-item">{{ shop.shop_link }}</a>
                       <div class="button-group">
-                        <button class="btn btn-primary" @click="startEdit('shop', index)">Edit</button>
-                        <button class="btn btn-danger" @click="deleteShop(index)">Delete</button>
+                        <button class="btn btn-primary" @click="startEdit('shop', index)">แก้ไข</button>
+                        <button class="btn btn-danger" @click="deleteShop(index)">ลบ</button>
                       </div>
                     </div>
                   </template>
@@ -988,14 +1100,32 @@ onMounted(() => fetchPhones(currentPage.value));
               </ul>
               <div class="add-item">
                 <input type="url" v-model="newShop" placeholder="เพิ่มช็อป..." class="add-input" />
-                <button class="btn btn-success" @click="addShop">Add</button>
+                <button class="btn btn-success" @click="addShop">เพิ่ม</button>
               </div>
             </div>
 
             <!-- Price Section -->
             <div class="modal-section">
               <h4>ราคา</h4>
-              <p class="price-display">{{ selectedPhone.price || 'N/A' }}</p>
+              <template v-if="editingPrice">
+                <div class="edit-item">
+                  <input type="text" v-model="newPrice" class="edit-input" placeholder="Enter new price" pattern="[0-9]*" inputmode="numeric">
+                  <div class="button-group">
+                    <button class="btn btn-primary" @click="savePrice">บันทึก</button>
+                    <button class="btn btn-danger" @click="editingPrice = false">ยกเลิก</button>
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <div class="list-item">
+                  <p class="price-display">{{ formatDisplayPrice(selectedPhone.price) || 'N/A' }}</p>
+                  <!-- <span>{{ selectedPhone.price || 'N/A' }}</span> -->
+                  <div class="button-group">
+                    <button class="btn btn-primary" @click="editingPrice = true; newPrice = selectedPhone.price">แก้ไข</button>
+                  </div>
+                </div>
+              </template>
+              <!-- <p class="price-display">{{ selectedPhone.price || 'N/A' }}</p> -->
             </div>
           </div>
 
@@ -1092,11 +1222,6 @@ onMounted(() => fetchPhones(currentPage.value));
   z-index: 9999;
   /* border: 2px solid red; */
 }
-
-
-
-/* Modal Box */
-
 
 /* Close Button */
 .close-btn {
