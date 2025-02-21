@@ -40,7 +40,7 @@ const router = createRouter({
         {
           path: "/cpu-manage",
           name: "cpu-manage",
-          component: () => import("@/views/apps/customers/CustomersListing.vue"),
+          component: () => import("@/views/apps/processor/ProcessorList.vue"),
           meta: {
             pageTitle: "CPU Manage",
             breadcrumbs: ["Apps", "Cpu Manage"],

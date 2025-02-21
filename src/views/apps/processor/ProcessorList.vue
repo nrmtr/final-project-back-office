@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useProcessors } from "@/core/data/useProcessor";
 import type { IProcessor } from "@/core/data/processor";
 
@@ -55,6 +55,28 @@ const handleSubmit = async () => {
 const handleDelete = async (id: number) => {
   await deleteProcessor(id);
 };
+
+const rating = computed({
+  get: () => processorForm.value.rating,
+  set: (value) => {
+    processorForm.value.rating = value.replace(/[^0-9]/g, "");
+  },
+});
+
+const antutu_10 = computed({
+  get: () => processorForm.value.antutu_10,
+  set: (value) => {
+    processorForm.value.antutu_10 = value.replace(/[^0-9]/g, "");
+  },
+});
+
+const cores = computed({
+  get: () => processorForm.value.cores,
+  set: (value) => {
+    processorForm.value.cores = value.replace(/[^0-9]/g, "");
+  },
+});
+
 </script>
 
 <template>
@@ -121,12 +143,12 @@ const handleDelete = async (id: number) => {
 
             <div class="mb-3">
               <label class="form-label">Rating:</label>
-              <input v-model="processorForm.rating" type="text" class="form-control"/>
+              <input v-model="rating" type="text" class="form-control"/>
             </div>
 
             <div class="mb-3">
               <label class="form-label">Antutu 10 Score:</label>
-              <input v-model="processorForm.antutu_10" type="text" class="form-control"/>
+              <input v-model="antutu_10" type="text" class="form-control"/>
             </div>
 
             <div class="mb-3">
@@ -136,7 +158,7 @@ const handleDelete = async (id: number) => {
 
             <div class="mb-3">
               <label class="form-label">Cores:</label>
-              <input v-model="processorForm.cores" type="text" class="form-control"/>
+              <input v-model="cores" type="text" class="form-control"/>
             </div>
 
             <div class="mb-3">
