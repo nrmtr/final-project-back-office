@@ -48,6 +48,7 @@ export default defineComponent({
       }
 
       try {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("authToken")}`;
         const response = await axios.post(`${API_BASE_URL}/auth/register`, {
           firstName: firstName.value,
           lastName: lastName.value,
@@ -55,7 +56,6 @@ export default defineComponent({
           password: password.value,
           confirmPassword: confirmPassword.value,
         });
-
         if (response.status === 201) {
           Swal.fire({
             icon: 'success',

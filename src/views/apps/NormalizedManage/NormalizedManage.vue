@@ -60,7 +60,9 @@ const updateSetting = async (id: number) => {
   if (!result.isConfirmed) return;
 
   try {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("authToken")}`;
     await axios.put(`${API_BASE_URL}/phone/normalized/${id}`, { max_value: setting.max_value });
+
     Swal.fire({ icon: "success", title: "Success", text: `Updated ${setting.feature} successfully!` });
     setting.isEditing = false;
   } catch (error: any) {
@@ -112,8 +114,6 @@ onMounted(fetchAllSettings);
         </div>
       </div>
     </div>
-
-
   </div>
 </template>
 

@@ -41,6 +41,7 @@ export function useProcessors() {
   // Add Processor
   const addProcessor = async (newProcessor: IProcessor) => {
     try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("authToken")}`;
       const payload = [newProcessor];
       const response = await axios.post(API_URL, payload);
       const updatedProcessors = response.data.data;
@@ -65,6 +66,7 @@ export function useProcessors() {
   // Edit Processor
   const updateProcessor = async (updatedProcessor: IProcessor) => {
     try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("authToken")}`;
       await axios.put(`${API_URL}/${updatedProcessor.id}`, updatedProcessor);
       const index = processors.value.findIndex(p => p.id === updatedProcessor.id);
       if (index !== -1) {
@@ -90,6 +92,7 @@ export function useProcessors() {
   // Delete Processor
   const deleteProcessor = async (id: number) => {
     try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("authToken")}`;
       await axios.delete(`${API_URL}/${id}`);
       processors.value = processors.value.filter(p => p.id !== id);
 

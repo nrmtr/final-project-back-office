@@ -3,6 +3,8 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import Swal from "sweetalert2";
 
+
+
 // Define the structure of a weight
 interface Weight {
   id: number;
@@ -19,6 +21,7 @@ interface GroupedWeights {
 const groupedWeights = ref<GroupedWeights>({});
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+
 const tagTranslations: Record<string, string> = {
   "general": "ใช้งานทั่วไป",
   "gaming": "เล่นเกม",
@@ -30,6 +33,7 @@ const tagTranslations: Record<string, string> = {
 // Fetch all weights
 const fetchWeights = async () => {
   try {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("authToken")}`;
     const response = await axios.get(`${API_BASE_URL}/weights`);
     const data = response.data;
 

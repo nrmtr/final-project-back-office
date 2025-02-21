@@ -68,11 +68,11 @@ export default defineComponent({
     },
     async addToDatabase(slug: string) {
       try {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("authToken")}`;
         const response: AxiosResponse = await axios.post(
           `${API_BASE_URL}/phone/add_phone`,
           { slug }
         );
-
         if (response.status === 200 || response.status === 201) {
           Swal.fire({
             icon: 'success',

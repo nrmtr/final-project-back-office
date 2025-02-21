@@ -1,6 +1,6 @@
 <template>
   <!--begin::Navbar-->
-  <div class="app-navbar flex-shrink-0">
+ `` <div class="app-navbar flex-shrink-0">
     <!--begin::Search-->
     <div class="app-navbar-item align-items-stretch ms-1 ms-md-4">
       <KTSearch />
