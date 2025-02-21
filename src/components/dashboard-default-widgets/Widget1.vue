@@ -176,51 +176,100 @@ const openModal = async (phone: Phone) => {
   showModal.value = true;
 
   try {
-    // Fetch advantages
-    const advantagesResponse = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${phone.id}/strength`);
-    if (advantagesResponse.ok) {
-      const advantagesData = await advantagesResponse.json();
-      advantages.value = advantagesData.data.map((item: any) =>({
-        id: item.id,
-        description: item.description
-      }));
-    } 
-
-    // Fetch disadvantages
-    const disadvantagesResponse = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${phone.id}/weakness`);
-    if (disadvantagesResponse.ok) {
-      const disadvantagesData = await disadvantagesResponse.json();
-      disadvantages.value = disadvantagesData.data.map((item: any) => ({
-        id: item.id,
-        description: item.description
-      }));
-    }
-
-    // Fetch reviews
-    const reviewsResponse = await fetch(`${API_BASE_URL}/phone/reviews/id/${phone.id}`);
-    if (reviewsResponse.ok) {
-      const reviewsData = await reviewsResponse.json();
-      reviews.value = reviewsData.data.map((item: any) => ({
-        id: item.id,
-        review_link: item.review_link
-      }));
-    }
-    
-    // Fetch shops
-    const shopsResponse = await fetch(`${API_BASE_URL}/phone/shops/id/${phone.id}`);
-    if (shopsResponse.ok) {
-      const shopsData = await shopsResponse.json();
-      shops.value = shopsData.data.map((item: any) => ({
-        id: item.id,
-        shop_link: item.shop_link
-      }));
-    }
+    await fetchAdvantages(phone.id); // Fetch advantages
+    await fetchDisadvantages(phone.id); // Fetch disadvantages
+    await fetchReviews(phone.id); // Fetch reviews
+    await fetchShops(phone.id); // Fetch shops
   } catch (error) {
     console.error("Error fetching additional data: ", error);
     Swal.fire({
       icon: 'error',
       title: 'Oops...',
       text: 'Failed to fetch additional data.',
+    });
+  }
+};
+
+// Fetch advantages
+const fetchAdvantages = async (phoneId: number) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${phoneId}/strength`);
+    if (response.ok) {
+      const data = await response.json();
+      advantages.value = data.data.map((item: any) => ({
+        id: item.id,
+        description: item.description,
+      }));
+    }
+  } catch (error) {
+    console.error("Error fetching advantages:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Failed to fetch advantages.",
+    });
+  }
+};
+
+// Fetch disadvantages
+const fetchDisadvantages = async (phoneId: number) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${phoneId}/weakness`);
+    if (response.ok) {
+      const data = await response.json();
+      disadvantages.value = data.data.map((item: any) => ({
+        id: item.id,
+        description: item.description,
+      }));
+    }
+  } catch (error) {
+    console.error("Error fetching disadvantages:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Failed to fetch disadvantages.",
+    });
+  }
+};
+
+// Fetch reviews
+const fetchReviews = async (phoneId: number) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/phone/reviews/id/${phoneId}`);
+    if (response.ok) {
+      const data = await response.json();
+      reviews.value = data.data.map((item: any) => ({
+        id: item.id,
+        review_link: item.review_link,
+      }));
+    }
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Failed to fetch reviews.",
+    });
+  }
+};
+
+// Fetch shops
+const fetchShops = async (phoneId: number) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/phone/shops/id/${phoneId}`);
+    if (response.ok) {
+      const data = await response.json();
+      shops.value = data.data.map((item: any) => ({
+        id: item.id,
+        shop_link: item.shop_link,
+      }));
+    }
+  } catch (error) {
+    console.error("Error fetching shops:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Failed to fetch shops.",
     });
   }
 };
@@ -254,7 +303,6 @@ const updateTags = async () => {
       phone.id === selectedPhone.value?.id ? { ...phone, tags: selectedPhone.value!.tags } : phone
     );
 
-    closeModal(); // Close modal after update
     fetchPhones(currentPage.value, searchQuery.value);
 
   } catch (error) {
@@ -306,12 +354,7 @@ const saveAdvantage = async (index: number) => {
       }),
     });
     if (response.ok) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'ข้อดีถูกบันทึกเรียบร้อยแล้ว',
-      });
-      closeModal();
+      showSuccessPopup("ข้อดีถูกบันทึกเรียบร้อยแล้ว");
     }
     if (!response.ok) throw new Error("Failed to save advantage");
 
@@ -338,15 +381,11 @@ const saveDisadvantage = async (index: number) => {
     });
 
     if (response.ok) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'ข้อเสียถูกบันทึกเรียบร้อยแล้ว',
-      });
-      closeModal();
+      showSuccessPopup("ข้อเสียถูกบันทึกเรียบร้อยแล้ว");
     }
     if (!response.ok) throw new Error("Failed to save disadvantage");
 
+    
     editingDisadvantage.value = null;
   } catch (error) {
     console.error("Error saving disadvantage: ",error);
@@ -364,12 +403,7 @@ const saveReview = async (index: number) => {
     });
 
     if (response.ok) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'รีวิวถูกบันทึกเรียบร้อยแล้ว',
-      });
-      closeModal();
+      showSuccessPopup("รีวิวถูกบันทึกเรียบร้อยแล้ว");
     }
 
     if (!response.ok) throw new Error("Failed to save review");
@@ -435,29 +469,17 @@ watch(newPrice, (value) => {
 
 const savePrice = async () => {
   if (!selectedPhone.value || !newPrice.value) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Invalid price data.', 
-    });
+    showErrorPopup("ข้อมูลราคาไม่ถูกต้อง");
     return;
   }
   const priceWithoutCommas = removeCommas(newPrice.value);
   if (!priceWithoutCommas) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'โปรดกรอกราคาที่ถูกต้อง (เฉพาะตัวเลขเท่านั้น)',
-    })
+    showErrorPopup("โปรดกรอกราคาที่ถูกต้อง (เฉพาะตัวเลขเท่านั้น)");
   }
   // Validate price before saving
   const validatedPrice = validateAndFormatPrice(newPrice.value);
   if (!validatedPrice) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Please enter a valid price (numbers only).', 
-    });
+    showErrorPopup("โปรดกรอกราคาที่ถูกต้อง (เฉพาะตัวเลขเท่านั้น)");
     return;
   }
 
@@ -487,15 +509,9 @@ const savePrice = async () => {
     );
 
     if (response.ok) {
-      Swal.fire({
-        icon: 'success',
-        title: 'สำเร็จ',
-        text: 'อัพเดทราคาเรียบร้อยแล้ว!',
-      });      
+      showSuccessPopup("อัพเดทราคาเรียบร้อยแล้ว!");
     }
-    closeModal();
     fetchPhones(currentPage.value, searchQuery.value);
-
     editingPrice.value = false; // Exit edit mode
 
   } catch (error) {
@@ -550,11 +566,7 @@ const deletePhone = async (phoneId: number) => {
 const deleteAdvantage = async (index: number) => {
   const advantage = advantages.value[index];
   if (!advantage || !advantage.id) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Invalid advantage data.',
-    });
+    showErrorPopup("ไม่ถูกต้อง");
     return;
   }
 
@@ -564,23 +576,14 @@ const deleteAdvantage = async (index: number) => {
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
     });
     if (response.ok) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'ข้อดีลบเรียบร้อยแล้ว',
-      });
-      closeModal();
+      showSuccessPopup("ข้อดีถูกลบเรียบร้อยแล้ว");
     }
     if (!response.ok) throw new Error("Failed to delete advantage");
 
     advantages.value.splice(index, 1);
   } catch (error) {
     console.error("Error deleting advantage: ",error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Failed to delete advantage. Please try again.',
-    });
+    showErrorPopup("เกิดข้อผิดพลาดในการลบข้อดี");
   }
 };
 
@@ -591,18 +594,14 @@ const deleteDisadvantage = async (index: number) => {
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
     });
     if (response.ok) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'ข้อเสียลบเรียบร้อยแล้ว',
-      })
-      closeModal();
+      showSuccessPopup("ข้อเสียถูกลบเรียบร้อยแล้ว");
     }
     if (!response.ok) throw new Error("Failed to delete disadvantage");
 
     disadvantages.value.splice(index, 1);
   } catch (error) {
     console.error("Error deleting disadvantage: ",error);
+    showErrorPopup("เกิดข้อผิดพลาดในการลบข้อเสีย");
   }
 };
 
@@ -614,12 +613,7 @@ const deleteReview = async (index: number) => {
     });
 
     if (response.ok) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'รีวิวลบเรียบร้อยแล้ว',
-      });
-      closeModal();
+      showSuccessPopup("รีวิวถูกลบเรียบร้อยแล้ว");
     }
 
     if (!response.ok) throw new Error("Failed to delete review");
@@ -627,6 +621,7 @@ const deleteReview = async (index: number) => {
     reviews.value.splice(index, 1);
   } catch (error) {
     console.error("Error deleting review: ",error);
+    showErrorPopup("เกิดข้อผิดพลาดในการลบรีวิว");
   }
 };
 
@@ -637,28 +632,20 @@ const deleteShop = async (index: number) => {
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
     });
     if (response.ok) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'ช็อปลบเรียบร้อยแล้ว',
-      });
-      closeModal();
+      showSuccessPopup("ช็อปถูกลบเรียบร้อยแล้ว");
     }
     if (!response.ok) throw new Error("Failed to delete shop"); 
 
     shops.value.splice(index, 1);
   } catch (error) {
     console.error("Error deleting shop: ",error);
+    showErrorPopup("เกิดข้อผิดพลาดในการลบช็อป");
   }
 };
 
 const addAdvantage = async () => {
   if (!newAdvantage.value || !selectedPhone.value) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Please enter a valid advantage description.',
-    });
+    showErrorPopup("โปรดกรอกรายละเอียดข้อดีที่ถูกต้อง");
     return;
   }
 
@@ -672,25 +659,13 @@ const addAdvantage = async () => {
         description: newAdvantage.value.trim(),
       }),
     });
-
-    if (response.ok) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'ข้อดีถูกเพิ่มเรียบร้อยแล้ว',
-      });
-      closeModal();
-    }
-
-
     if (!response.ok) throw new Error("Failed to add advantage");
 
-    const newAdvantageData = await response.json();
-    advantages.value.push({
-      id: newAdvantageData.id,
-      description: newAdvantageData.description,
-    });
+    if (response.ok) {
+      showSuccessPopup("ข้อดีถูกเพิ่มเรียบร้อยแล้ว");
+    }
 
+    await fetchAdvantages(selectedPhone.value.id);
     newAdvantage.value = "";
   } catch (error) {
     console.error("Error adding advantage: ",error);
@@ -714,21 +689,12 @@ const addDisadvantage = async () => {
     });
 
     if (response.ok) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'ข้อเสียถูกเพิ่มเรียบร้อยแล้ว',
-      });
-      closeModal();
+      showSuccessPopup("ข้อเสียถูกเพิ่มเรียบร้อยแล้ว");
     }
 
     if (!response.ok) throw new Error("Failed to add disadvantage");
 
-    const newDisadvantageData = await response.json();
-    disadvantages.value.push({
-      id: newDisadvantageData.id,
-      description: newDisadvantageData.description,
-    });
+    await fetchDisadvantages(selectedPhone.value.id);
     newDisadvantage.value = "";
   } catch (error) {
     console.error("Error adding disadvantage: ",error);
@@ -751,21 +717,12 @@ const addReview = async () => {
     });
 
     if (response.ok) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'รีวิวถูกเพิ่มเรียบร้อยแล้ว',
-      });
-      closeModal();
+      showSuccessPopup("รีวิวถูกเพิ่มเรียบร้อยแล้ว");
     }
 
     if (!response.ok) throw new Error("Failed to add review");
 
-    const newReviewData = await response.json();
-    reviews.value.push({
-      id: newReviewData.id,
-      review_link: newReviewData.review_link,
-    });
+    await fetchReviews(selectedPhone.value.id);
     newReview.value = "";
   } catch (error) {
     console.error("Error adding review: ",error);
@@ -788,24 +745,16 @@ const addShop = async () => {
     });
 
     if (response.ok) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'ช็อปถูกเพิ่มเรียบร้อยแล้ว',
-      });
-      closeModal();
+      showSuccessPopup("ช็อปถูกเพิ่มเรียบร้อยแล้ว");
     }
 
     if (!response.ok) throw new Error("Failed to add shop");
 
-    const newShopData = await response.json();
-    shops.value.push({
-      id: newShopData.id,
-      shop_link: newShopData.shop_link,
-    });
+    await fetchShops(selectedPhone.value.id);
     newShop.value = "";
   } catch (error) {
     console.error("Error adding shop: ",error);
+    showErrorPopup("เกิดข้อผิดพลาดในการเพิ่มช็อป");
   }
 };
 
@@ -818,6 +767,13 @@ const showSuccessPopup = (message: string) => {
     customClass: {
       popup: "swal-custom-zindex",
     },
+    didOpen: () => {
+        // Find the parent div with class 'swal2-container' and set its z-index
+        const swalContainer = document.querySelector('.swal2-container') as HTMLElement;
+        if (swalContainer) {
+          swalContainer.style.zIndex = '10000';
+        }
+    }
   });
 };
 
