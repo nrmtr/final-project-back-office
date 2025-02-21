@@ -49,11 +49,7 @@
         <!--begin::Mobile logo-->
         <div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
           <router-link to="/" class="d-lg-none">
-            <!-- <img
-              alt="Logo"
-              :src="getAssetPath('media/logos/default-small.svg')"
-              class="h-30px"
-            /> -->
+
           </router-link>
         </div>
         <!--end::Mobile logo-->
