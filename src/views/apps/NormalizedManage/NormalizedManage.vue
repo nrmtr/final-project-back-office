@@ -11,7 +11,7 @@ interface NormalizedSetting {
   max_value: DoubleRange;
   isEditing?: boolean;
 }
-
+``
 const normalizedSettings = ref<NormalizedSetting[]>([]);
 
 // Fetch all normalized settings

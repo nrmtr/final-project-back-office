@@ -85,7 +85,7 @@ const fetchPhones = async (page: number = 1, search: string = "") => {
     const API_URL = `${API_BASE_URL}/phone/list`;
     const response = await fetch(API_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" , "Authorization": `Bearer ${localStorage.getItem("authToken")}`},
       body: JSON.stringify({
         brand: ["samsung", "apple", "vivo", "xiaomi", "huawei", "oneplus", "oppo", "realme","honor"],
         category: ["general", "gaming", "take beautiful photos", "rider", "ai features", "live streaming"],
@@ -232,7 +232,7 @@ const updateTags = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/phone/update_tags`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
       body: JSON.stringify([
         {
           phone_id: selectedPhone.value.id,
@@ -300,7 +300,7 @@ const saveAdvantage = async (index: number) => {
   try {
     const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${advantages.value[index].id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
       body: JSON.stringify({
         description: advantages.value[index].description,
       }),
@@ -331,7 +331,7 @@ const saveDisadvantage = async (index: number) => {
   try {
     const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${disadvantages.value[index].id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
       body: JSON.stringify({
         description: disadvantages.value[index].description,
       }),
@@ -357,7 +357,7 @@ const saveReview = async (index: number) => {
   try {
     const response = await fetch(`${API_BASE_URL}/phone/reviews/${reviews.value[index].id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
       body: JSON.stringify({
         review_link: reviews.value[index].review_link,
       }),
@@ -384,7 +384,7 @@ const saveShop = async (index: number) => {
   try {
     const response = await fetch(`${API_BASE_URL}/phone/shops/${shops.value[index].id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
       body: JSON.stringify({
         shop_link: shops.value[index].shop_link,
       }),
@@ -464,7 +464,7 @@ const savePrice = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/phone/update_price`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
       body: JSON.stringify({
         phone_id: selectedPhone.value.id,
         price: priceWithoutCommas,
@@ -530,6 +530,7 @@ const deletePhone = async (phoneId: number) => {
     try {
       const response = await fetch(`${API_BASE_URL}/phone/${phoneId}`, {
         method: "DELETE",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
       });
 
       if (!response.ok) throw new Error("Failed to delete phone");
@@ -560,6 +561,7 @@ const deleteAdvantage = async (index: number) => {
   try {
     const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${advantages.value[index].id}`, {
       method: "DELETE",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
     });
     if (response.ok) {
       Swal.fire({
@@ -586,6 +588,7 @@ const deleteDisadvantage = async (index: number) => {
   try {
     const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness/${disadvantages.value[index].id}`, {
       method: "DELETE",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
     });
     if (response.ok) {
       Swal.fire({
@@ -607,6 +610,7 @@ const deleteReview = async (index: number) => {
   try {
     const response = await fetch(`${API_BASE_URL}/phone/reviews/${reviews.value[index].id}`, {
       method: "DELETE",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
     });
 
     if (response.ok) {
@@ -630,6 +634,7 @@ const deleteShop = async (index: number) => {
   try {
     const response = await fetch(`${API_BASE_URL}/phone/shops/${shops.value[index].id}`, {
       method: "DELETE",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
     });
     if (response.ok) {
       Swal.fire({
@@ -660,7 +665,7 @@ const addAdvantage = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
       body: JSON.stringify({
         phone_id: selectedPhone.value.id,
         type: "strength",
@@ -700,7 +705,7 @@ const addDisadvantage = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/phone/strength_and_weakness`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" , "Authorization": `Bearer ${localStorage.getItem("authToken")}`},
       body: JSON.stringify({
         phone_id: selectedPhone.value.id,
         type: "weakness",
@@ -738,7 +743,7 @@ const addReview = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/phone/reviews`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" , "Authorization": `Bearer ${localStorage.getItem("authToken")}`},
       body: JSON.stringify({
         phone_id: selectedPhone.value.id,
         review_link: newReview.value,
@@ -775,7 +780,7 @@ const addShop = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/phone/shops`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("authToken")}` },
       body: JSON.stringify({
         phone_id: selectedPhone.value.id,
         shop_link: newShop.value,
