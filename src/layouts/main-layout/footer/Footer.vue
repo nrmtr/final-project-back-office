@@ -10,15 +10,15 @@
       }"
     >
       <!--begin::Copyright-->
-      <div class="text-dark order-2 order-md-1">
-        <span class="text-muted fw-semibold me-1">2024©</span>
-        <a
+      <!-- <div class="text-dark order-2 order-md-1"> -->
+        <!-- <span class="text-muted fw-semibold me-1">2024©</span> -->
+        <!-- <a
           href="#"
           target="_blank"
           class="text-gray-800 text-hover-primary"
           >Niramit</a
-        >
-      </div>
+        > -->
+      <!-- </div> -->
       <!--end::Copyright-->
       <!--begin::Menu-->
       <ul class="menu menu-gray-600 menu-hover-primary fw-semibold order-1">
