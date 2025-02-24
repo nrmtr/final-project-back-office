@@ -97,14 +97,14 @@ export default defineComponent({
             </thead>
             <tbody>
               <tr v-for="log in logs" :key="log.id">
-                <td>{{ log.id }}</td>
-                <td>{{ log.table_name }}</td>
-                <td>{{ log.action }}</td>
-                <td>{{ log.User.email }}</td>
+                <td><p>{{ log.id }}</p></td>
+                <td><p>{{ log.table_name }}</p></td>
+                <td><p>{{ log.action }}</p></td>
+                <td><p>{{ log.User.email }}</p></td>
                 <td class="details-column">
-                  <pre>{{ formatDetails(log.details) }}</pre>
+                  <pre><p>{{ formatDetails(log.details) }}</p></pre>
                 </td>
-                <td>{{ log.createdAt }}</td>
+                <td><p>{{ log.createdAt }}</p></td>
               </tr>
             </tbody>
           </table>
@@ -116,6 +116,9 @@ export default defineComponent({
 </template>
 
 <style scoped>
+p{
+  font-size: 12px;
+}
 .table-title {
   font-size: 1.5rem;
   margin-bottom: 1rem;
@@ -159,7 +162,8 @@ th, td {
 th {
   background-color: #f2f2f2;
   font-weight: 600;
-  font-size: 0.875rem;
+  /* font-size: 0.875rem; */
+  font-size: 1rem;
 }
 
 .details-column {

@@ -115,7 +115,7 @@ onMounted(fetchWeights);
 
 <template>
   <div class="container text-center">
-    <h1>อัพเดทน้ําหนักการให้คะแนน</h1>
+    <h1>อัพเดทน้ำหนักการให้คะแนน</h1>
     <div class="row">
       <div 
         v-for="(weights, tag) in groupedWeights" 
@@ -127,14 +127,14 @@ onMounted(fetchWeights);
           <table class="table table-striped table-bordered table-hover">
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Weight</th>
-                <th>Action</th>
+                <th><h5>Title</h5></th>
+                <th><h5>Weight</h5></th>
+                <th><h5>Action</h5></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="weight in weights" :key="weight.id">
-                <td>{{ weight.title }}</td>
+                <td><p>{{ weight.title }}</p></td>
                 <td>
                   <input
                     type="number"
@@ -144,6 +144,7 @@ onMounted(fetchWeights);
                     max="1"
                     :disabled="!weight.isEditing"
                     class="form-control-sm"
+                    style="font-size: 15px;"
                   />
                 </td>
                 <td>
@@ -151,6 +152,7 @@ onMounted(fetchWeights);
                     v-if="!weight.isEditing"
                     class="btn btn-primary btn-sm me-2"
                     @click="editWeight(tag.toString(), weight.id)"
+                    style="font-size: 15px;"
                   >
                     แก้ไข
                   </button>
@@ -158,6 +160,7 @@ onMounted(fetchWeights);
                     v-if="weight.isEditing"
                     class="btn btn-success btn-sm"
                     @click="updateWeight(tag.toString(), weight.id)"
+                    style="font-size: 15px;"
                   >
                     อัพเดท
                   </button>
@@ -172,6 +175,11 @@ onMounted(fetchWeights);
 </template>
 
 <style scoped>
+
+p {
+  font-size: 15px;
+}
+
 .table-container {
   padding: 15px;
   border: 1px solid #ddd;

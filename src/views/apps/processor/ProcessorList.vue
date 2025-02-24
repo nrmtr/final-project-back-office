@@ -87,7 +87,7 @@ const cores = computed({
 
     <!-- Add Button -->
     <div class="text-end mb-3">
-      <button @click="openAddModal" class="btn btn-primary">เพิ่มซีพียู</button>
+      <button @click="openAddModal" class="btn btn-primary"><p>เพิ่มซีพียู</p></button>
     </div>
 
     <!-- Table Container -->
@@ -98,28 +98,28 @@ const cores = computed({
         <table class="table table-striped table-bordered table-hover">
           <thead>
             <tr>
-              <th>Processor</th>
-              <th>Rating</th>
-              <th>Antutu 10 Score</th>
-              <th>Geekbench 6 Score</th>
-              <th>Cores</th>
-              <th>Clock Speed (GHz)</th>
-              <th>GPU</th>
-              <th style="min-width: 150px">Actions</th>
+              <th style="width: 200px;"><h6>Processor</h6></th>
+              <th><h6>Rating</h6></th>
+              <th><h6>Antutu 10 Score</h6></th>
+              <th><h6>Geekbench 6 Score</h6></th>
+              <th><h6>Cores</h6></th>
+              <th><h6>Clock Speed (GHz)</h6></th>
+              <th><h6>GPU</h6></th>
+              <th style="min-width: 20px; width:200px;"><h6>Actions</h6></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="processor in processors" :key="processor.id ?? 'temp-key'">
-              <td>{{ processor.processor }}</td>
-              <td>{{ processor.rating }}</td>
-              <td>{{ processor.antutu_10 }}</td>
-              <td>{{ processor.geekbench_6 }}</td>
-              <td>{{ processor.cores }}</td>
-              <td>{{ processor.clock }}</td>
-              <td>{{ processor.gpu }}</td>
+              <td><p>{{ processor.processor }}</p></td>
+              <td><p>{{ processor.rating }}</p></td>
+              <td><p>{{ processor.antutu_10 }}</p></td>
+              <td><p>{{ processor.geekbench_6 }}</p></td>
+              <td><p>{{ processor.cores }}</p></td>
+              <td><p>{{ processor.clock }}</p></td>
+              <td><p>{{ processor.gpu }}</p></td>
               <td>
-                <button @click="openEditModal(processor)" class="btn btn-primary btn-sm me-2">แก้ไข</button>
-                <button @click="processor.id !== null ? handleDelete(processor.id) : null" class="btn btn-danger btn-sm">ลบ</button>
+                <button @click="openEditModal(processor)" class="btn btn-primary btn-sm me-2"><p>แก้ไข</p></button>
+                <button @click="processor.id !== null ? handleDelete(processor.id) : null" class="btn btn-danger btn-sm"><p>ลบ</p></button>
               </td>
             </tr>
           </tbody>
@@ -183,6 +183,11 @@ const cores = computed({
 </template>
 
 <style scoped>
+p{
+  font-size: 15px;
+  margin-bottom: 0;
+}
+
 .table-wrapper {
   position: relative;
   height: 500px;

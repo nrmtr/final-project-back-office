@@ -77,34 +77,35 @@ onMounted(fetchAllSettings);
 
 <template>
   <div class="container text-center">
-    <h2>อัพเดทหรือเปลี่ยนแปลงค่ามาตรฐาน</h2>
+    <h1>อัพเดทหรือเปลี่ยนแปลงค่ามาตรฐาน</h1>
     <div class="row justify-content-center">
       <div class="col-md-5 col-lg-4 mb-4">
         <div class="table-container">
           <table class="table table-striped table-bordered table-hover">
             <thead>
               <tr>
-                <th>Feature</th>
-                <th>Max Value</th>
-                <th>Action</th>
+                <th><h5>Feature</h5></th>
+                <th><h5>Max Value</h5></th>
+                <th><h5>Action</h5></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="setting in normalizedSettings" :key="setting.id">
-                <td>{{ setting.feature }}</td>
+                <td><p>{{ setting.feature }}</p></td>
                 <td>
                   <input
                     type="number"
                     v-model="setting.max_value"
                     :disabled="!setting.isEditing"
                     class="form-control-sm input-small"
+                    style="font-size: 15px;"
                   />
                 </td>
                 <td>
-                  <button v-if="!setting.isEditing" class="btn btn-primary btn-sm" @click="editSetting(setting.id)">
+                  <button v-if="!setting.isEditing" class="btn btn-primary btn-sm" @click="editSetting(setting.id)" style="font-size: 15px">
                     แก้ไข
                   </button>
-                  <button v-if="setting.isEditing" class="btn btn-success btn-sm" @click="updateSetting(setting.id)">
+                  <button v-if="setting.isEditing" class="btn btn-success btn-sm" @click="updateSetting(setting.id)" style="font-size: 15px">
                     ยืนยัน
                   </button>
                 </td>
@@ -118,6 +119,10 @@ onMounted(fetchAllSettings);
 </template>
 
 <style scoped>
+
+p {
+  font-size: 15px;
+}
 
 .table-container {
   padding: 15px;

@@ -120,7 +120,7 @@ export default defineComponent({
           <img :src="phone.image" :alt="phone.phone_name" class="phone-img" />
           <h2>{{ phone.phone_name }}</h2>
           <p>{{ phone.brand }}</p>
-          <button @click="addToDatabase(phone.slug)" class="btn btn-success btn-sm">
+          <button @click="addToDatabase(phone.slug)" class="btn btn-success btn-sm" style="font-size: 15px;">
             เพิ่มข้อมูล
           </button>
         </div>
@@ -149,6 +149,9 @@ export default defineComponent({
 </template>
 
 <style scoped>
+p {
+  font-size: 15px;
+}
 .button-container {
   display: flex;
   flex-wrap: wrap;

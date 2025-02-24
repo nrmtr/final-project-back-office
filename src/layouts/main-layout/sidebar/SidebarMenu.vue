@@ -1,6 +1,6 @@
 <template>
   <!--begin::sidebar menu-->
-  <div class="app-sidebar-menu overflow-hidden flex-column-fluid">
+  <div class="app-sidebar-menu overflow-hidden flex-column-fluid"       style="background-color: currentColor;">
     <!--begin::Menu wrapper-->
     <div
       id="kt_app_sidebar_menu_wrapper"

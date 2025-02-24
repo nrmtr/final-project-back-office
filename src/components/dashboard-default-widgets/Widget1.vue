@@ -848,18 +848,19 @@ onMounted(() => fetchPhones(currentPage.value));
         type="text"
         placeholder="ค้นหาโดย ชื่อ หรือ ยี่ห้อ..."
         @input="handleSearch"
+        style="font-size: 15px;"
       />
     </div>
 
     <!-- Pagination (Top) -->
     <div class="pagination">
-      <button @click="prevPage" :disabled="currentPage === 1">ก่อนหน้า</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button @click="nextPage" :disabled="currentPage === totalPages">ถัดไป</button>
+      <button @click="prevPage" :disabled="currentPage === 1" style="font-size: 15px;">ก่อนหน้า</button>
+      <span style="font-size: 15px;">Page {{ currentPage }} of {{ totalPages }}</span>
+      <button @click="nextPage" :disabled="currentPage === totalPages" style="font-size: 15px;">ถัดไป</button>
     </div>
     
     <!-- Loading and Error States -->
-    <div v-if="loading">Loading phones...</div>
+    <div v-if="loading"><p>Loading phones...</p></div>
     <div v-else-if="error" class="error">{{ error }}</div>
 
     <!-- Phone Grid -->
@@ -873,7 +874,7 @@ onMounted(() => fetchPhones(currentPage.value));
         <img :src="phone.image || 'fallback-image-url'" alt="Phone Image" class="phone-img" />
         <h3>{{ phone.name }}</h3>
         <p><strong>Brand:</strong> {{ phone.brand }}</p>
-        <p><strong>Price:</strong> {{ formatDisplayPrice(phone.price) }}</p>
+        <p><strong>Price:</strong>{{ formatDisplayPrice(phone.price) }}</p>
         <ul class="list-inline d-flex justify-content-end">
           <li class="list-inline-item">
             <button class="btn btn-danger btn-sm rounded d-flex align-items-center justify-content-center"
@@ -1101,6 +1102,10 @@ onMounted(() => fetchPhones(currentPage.value));
 </template>
 
 <style scoped>
+p {
+  font-size: 15px;
+}
+
 .phone-list {
   text-align: center;
 }

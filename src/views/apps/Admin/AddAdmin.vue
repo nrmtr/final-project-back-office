@@ -111,31 +111,31 @@ export default defineComponent({
     
     <form @submit.prevent="registerUser" class="register-form">
       <div class="form-group">
-        <label for="firstName" class="form-label">First Name:</label>
-        <input type="text" id="firstName" v-model="firstName" required class="form-input" />
+        <label for="firstName" class="form-label"><h5>First Name:</h5></label>
+        <input type="text" id="firstName" v-model="firstName" required class="form-input" style="font-size: 15px;"/>
       </div>
       <div class="form-group">
-        <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" v-model="lastName" required class="form-input" />
+        <label for="lastName"><h5>Last Name:</h5></label>
+        <input type="text" id="lastName" v-model="lastName" required class="form-input" style="font-size: 15px;"/>
       </div>
       <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" v-model="email" required class="form-input" />
+        <label for="email"><h5>Email:</h5></label>
+        <input type="email" id="email" v-model="email" required class="form-input" style="font-size: 15px;"/>
       </div>
       <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" required class="form-input" />
+        <label for="password"><h5>Password:</h5></label>
+        <input type="password" id="password" v-model="password" required class="form-input" style="font-size: 15px;"/>
       </div>
       <div class="form-group">
-        <label for="confirmPassword">Confirm Password:</label>
-        <input type="password" id="confirmPassword" v-model="confirmPassword" required class="form-input" />
+        <label for="confirmPassword"><h5>Confirm Password:</h5></label>
+        <input type="password" id="confirmPassword" v-model="confirmPassword" required class="form-input" style="font-size: 15px;"/>
       </div>
       <button type="submit" class="submit-btn">Register</button>
     </form>
 
     <!-- User List Table -->
     <div class="table-section mb-4">
-      <h2 class="table-title text-center">รายชื่อแอดมิน</h2>
+      <h1 class="table-title text-center">รายชื่อแอดมิน</h1>
       <div class="table-container">
         <table v-if="users.length" class="user-table">
           <thead>
@@ -148,10 +148,10 @@ export default defineComponent({
           </thead>
           <tbody>
             <tr v-for="user in users" :key="user.id">
-              <td>{{ user.firstName }}</td>
-              <td>{{ user.lastName }}</td>
-              <td>{{ user.email }}</td>
-              <td>{{ user.roles.join(', ') }}</td>
+              <td><p>{{ user.firstName }}</p></td>
+              <td><p>{{ user.lastName }}</p></td>
+              <td><p>{{ user.email }}</p></td>
+              <td><p>{{ user.roles.join(', ') }}</p></td>
             </tr>
           </tbody>
         </table>
@@ -162,6 +162,9 @@ export default defineComponent({
 </template>
 
 <style scoped>
+p {
+  font-size: 12px;
+}
 .container {
   max-width: 400px; 
   margin: 0 auto;
@@ -244,6 +247,7 @@ export default defineComponent({
   font-weight: 600;
   text-align: left;
   border-bottom: 2px solid #ddd;
+  font-size: 12px;
 }
 
 .user-table td {
